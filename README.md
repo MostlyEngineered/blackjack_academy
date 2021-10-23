@@ -14,16 +14,18 @@ All players are initially dealt one card (player cards are always face up) from 
 
 (Insurance rule) if the dealer's face-up card has value 10 or 11, the players can bet that the dealer has blackjack.  They can bet up to half their original bet.  If the dealer has blackjack they win 2 to 1.
 
-When it is the player's turn there are 2 main options and 2 options that require preconditions:
+The dealer hand is checked for blackjack.  If the dealer has blackjack the hand ends and bet win/losses are calculated.
+
+When it is the player's turn there are 2 main options and 3 options that require preconditions:
 
 Hit - dealer deals them another face up card adding to their total
 Stay - the player ends their turn
 Split (preconditions)- If the player is dealt two identical value cards (10, J, Q, K are all same), they may split and play both cards as new hands.  This can be done to start 3 hands, but no more.
 Double down (preconditions)- This action is only allowed if the player's hand consists of two cards (splits can be doubled down on).  The player can bet more (up to their original amount) and recieves only one card (ie this action amounts to Bet, Hit, Stay)
+Surrender - Player loses half their bet after looking at their initial two cards.  There are two varieties.  Early Surrender, where the player quits before the dealer checks for blackjack.  Late surrender is quitting after the dealer checks for blackjack.
 
 ## Dealer play
 The dealer has a set algorithm they must use to play.  The dealer can only hit or stay.  The dealer must hit until they reach 17 or greater (ie if they have 16 or less).
-
 
 ## Shoe management
 Start of a shoe, the dealer deals a card direct to discard (no one sees the value of this card)
