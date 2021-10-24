@@ -28,4 +28,60 @@ Surrender - Player loses half their bet after looking at their initial two cards
 The dealer has a set algorithm they must use to play.  The dealer can only hit or stay.  The dealer must hit until they reach 17 or greater (ie if they have 16 or less).
 
 ## Shoe management
-Start of a shoe, the dealer deals a card direct to discard (no one sees the value of this card)
+Start of a shoe, the dealer deals a card direct to discard (no one sees the value of this card).  {}{}{} Add section on reshuffling rules {}{}{}
+
+
+# Perfect play
+Since the player plays directly against the dealer and the dealer has a set algorithm to follow, the probabilities of given events are very calculable.  Since the probabilities are calculable, the rules around "perfect play" can be figured out.  Here "perfect play" means that if there is no knowledge of face-down cards values.
+
+NOTE: For the purposes of this project near perfect play will be the standard as house rules can alter the precise implementation of perfect play
+
+## Sources on Perfect play
+### Good series of charts and 30 phrases defining perfect play
+https://www.blackjackapprenticeship.com/blackjack-strategy-charts/
+
+
+#Basic Layout of Code
+
+##Important objects
+
+()()()  General Logic
+         - All cards stay in same memory and pointers determine where each card is (player #, dealer, discard, shoe)
+         - 
+
+Game Object:
+ - Rule variations values
+ - Player Data (n players and a dealer)
+ - Current player turn
+ - Number of players in game
+ - Dealer face-up card
+ 
+Player Data:
+ - Player money
+ - Current hand(s)
+ - Player number (Player 1 will be the human player)
+
+Dealer Data (Player 0):
+  # inherit from player
+ - Current hand
+ - Dealer number
+ 
+Player hand:
+  # Most values on this should be recalculated everytime a hand is dealt
+ - Current cards
+ - Soft score, hard score (if aces are in the hand the hand has multiple values) (flag value)
+ - Possible hand values (what all possible numerical hand values are, (ie aces))
+ - Hand numerical value (maximum of the possible hand values)
+
+Legal Cards:
+  # On instantiation n number of 52 card sets should be generated
+ - Card ID (a number that makes each card unique)
+ - Card Suit
+ - Card Rank (eg 2, 4, J, Q, A)
+  
+Player Logic:
+  # On separate thread for each player
+  # Governs what computer players will do, governs hints for human players
+  # Should have access to the hand
+  # Dealer logic pattern should be a type here
+  
