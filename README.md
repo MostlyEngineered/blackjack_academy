@@ -5,7 +5,7 @@
 ## Basic setup
 All players compete against the dealer, trying to get their card total closer to 21 without going over.  All cards are their face value (2-10 on the number cards), JQK are 10, Ace can be 1 or 11 (whichever value is better for the hand).
 
-If the player is dealt a "blackjack" (getting 21 on first two cards), the player gets a bonus (common bonuses are 3:2, 2:1, 6:5, 7:5).  The "shoe" is the "deck" of cards that is played with, but consists of one to as many as eight decks of cards.  If the player wins without getting a blackjack they win the amount that they bet.  If the dealer's hand (last to be resolved) is higher than the player or the player busts (goes over 21), the house wins and the player loses their bet.
+If the player is dealt a "blackjack" (getting 21 on first two cards), the player gets a bonus (common bonuses are 3:2, 2:1, 6:5, 7:5).  The "shoe" is the "deck" of cards that is played with, but consists of one to as many as eight decks of cards (in theory there can be n number of decks, but in practice most casinos won't go past 8).  If the player wins without getting a blackjack they win the amount that they bet.  If the dealer's hand (last to be resolved) is higher than the player or the player busts (goes over 21), the house wins and the player loses their bet.
 
 ## Game flow
 Bets are placed before any cards are dealt.  There is a minimum and a maximum bet size usually that depends on the table.
@@ -28,8 +28,7 @@ Surrender - Player loses half their bet after looking at their initial two cards
 The dealer has a set algorithm they must use to play.  The dealer can only hit or stay.  The dealer must hit until they reach 17 or greater (ie if they have 16 or less).
 
 ## Shoe management
-Start of a shoe, the dealer deals a card direct to discard (no one sees the value of this card).  {}{}{} Add section on reshuffling rules {}{}{}
-
+Start of a shoe, the dealer deals a card direct to discard (called the "burn" card, no one sees the value of this card).  Reshuffling rules vary by casino, but a common practice is to have a marker card (this is not a playing card, it's a blank card) about a deck and a half from the end of the end of the shoe.  When this marker card is encountered in the deal, the shoe will be entirely reshuffled at the end of the current round.
 
 # Perfect play
 Since the player plays directly against the dealer and the dealer has a set algorithm to follow, the probabilities of given events are very calculable.  Since the probabilities are calculable, the rules around "perfect play" can be figured out.  Here "perfect play" means that if there is no knowledge of face-down cards values.
@@ -51,34 +50,54 @@ https://www.blackjackapprenticeship.com/blackjack-strategy-charts/
 
 Game Object:
  - Rule variations values
+   - shoe reshuffling value
+   - blackjack payout
+   - {}{} add more variants
  - Player Data (n players and a dealer)
  - Current player turn
  - Number of players in game
  - Dealer face-up card
+ - Active player hand 
  
 Player Data:
  - Player money
- - Current hand(s)
+ - Current hand(s) [splits will result in multiple hands]
  - Player number (Player 1 will be the human player)
 
 Dealer Data (Player 0):
   # inherit from player
  - Current hand
  - Dealer number
- 
+
+Virtual hand:
+  - Current cards
+
 Player hand:
+  # Inherit from Virtual hand
   # Most values on this should be recalculated everytime a hand is dealt
- - Current cards
  - Soft score, hard score (if aces are in the hand the hand has multiple values) (flag value)
  - Possible hand values (what all possible numerical hand values are, (ie aces))
  - Hand numerical value (maximum of the possible hand values)
 
-Legal Cards:
+Discard hand:
+  # Inherit from Virtual hand
+
+Shoe hand:
+  # Inherit from Virtual hand
+
+Legal Cards (Card):
   # On instantiation n number of 52 card sets should be generated
  - Card ID (a number that makes each card unique)
  - Card Suit
  - Card Rank (eg 2, 4, J, Q, A)
-  
+
+All Cards (AllCards):
+  # On instantiation n number of 52 card sets should be generated
+ - Card ID (a number that makes each card unique)
+ - Card Suit
+ - Card Rank (eg 2, 4, J, Q, A)
+
+
 Player Logic:
   # On separate thread for each player
   # Governs what computer players will do, governs hints for human players
