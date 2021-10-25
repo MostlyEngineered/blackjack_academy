@@ -43,68 +43,17 @@ class Card {
             cout << _cardID << ": " << _cRank << _suit << endl;
         };
 
-        // unique_ptr<Card> card_ptr(new Card(s, r, _curID));
-        // _cards.emplace_back(card_ptr);
-
-
         long _cardID;
         char _cRank;
         char _suit;
         bool _faceUp = false;
         bool _discarded = false;
 
-
     private:
 
 
 };
 
-// void UniquePointer()
-// {
-//     std::unique_ptr<int> unique(new int); // create a unique pointer on the stack
-//     *unique = 2; // assign a value
-//     // delete is not neccessary
-// }
-
-class  AllCards{
-private:
-
-public:
-
-    AllCards(int nDecks){
-        // make shoe
-        // cout << "making " << nDecks << " decks" << endl;
-        for (int n=0;n < nDecks;++n){ 
-            cout << n << endl;
-            for (auto const& s : suits){
-                for (auto const& r : ranks){ 
-                    unique_ptr<Card> card(new Card(s, r, _curID));
-                    _cards.emplace_back(std::move(card));
-                    // _cards.emplace_back(Card(s, r, _curID));                    
-                    _curID += 1;
-
-                }
-            }
-    
-        }        
-
-    };
-
-    void printAllCards(){
-        for (auto & c : _cards){
-            // *c.printCard();
-        }
-    };
-
-
-
-    long _curID=0;
-    std::vector<unique_ptr<Card>> _cards;
-    // Hand _shoe;
-
-};
-
-    
 class Hand{
     private:
 
@@ -114,16 +63,64 @@ class Hand{
 
     ~Hand(){};
 
-    void printHand(){};
+    void printHand(){
+        for (auto &c : _handCards){
+            c->printCard();
+        }
+    };
 
     void calculateHandValue(){};
 
-    void dealCardToHand(Card c){
-        unique_ptr<Card> c_ptr;
-        _handCards.emplace_back();
+    void moveCardToHand(unique_ptr<Card> card){
+        _handCards.emplace_back(std::move(card));
     };
 
-    vector<unique_ptr<Card>> _handCards;
 
+    vector<unique_ptr<Card>> _handCards;
+};
+
+class  AllCards : public Hand {
+private:
+
+public:
+
+    AllCards(int nDecks){
+        for (int n=0;n < nDecks;++n){ 
+            for (auto const& s : suits){
+                for (auto const& r : ranks){ 
+                    unique_ptr<Card> card(new Card(s, r, _curID));                 
+                    card->printCard();
+                    dealCardToShoe(std::move(card));
+                    // card.get()->printCard();
+                    // cout << card->_suit;
+                    // cout << (card->_suit);
+                    _curID += 1;
+
+                }
+            }
+        }        
+    };
+
+    void discardCard(unique_ptr<Card> card){
+        _discardPile.moveCardToHand(std::move(card));
+    };
+
+    void dealCardToShoe(unique_ptr<Card> card){
+        _shoe.moveCardToHand(std::move(card));
+    };
+
+    // void dealCardFromShoeToHand(unique_ptr<Card> card, Hand hand){
+    //     hand.moveCardToHand(std::move(card));
+    // };
+
+    void dealIndexCardFromShoeToHand(int i, Hand hand){
+        hand.moveCardToHand(std::move(_shoe._handCards[i]));
+    };
+
+    long _curID=0;
+    Hand _shoe;
+    Hand _discardPile;
 
 };
+
+    
