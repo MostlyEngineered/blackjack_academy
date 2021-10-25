@@ -31,6 +31,7 @@ class Card {
     public:
 
         Card(char suit, char cRank, double cardID){
+            cout << "card created" << endl;
             _cardID = cardID;
             _suit = suit;
             _cRank = cRank;
@@ -38,6 +39,7 @@ class Card {
         };
 
         ~Card(){
+            cout << "card destroyed" << endl;
             // delete this;
         };
 
@@ -78,9 +80,11 @@ class Hand{
 
     public:
 
-    Hand(){};
+    Hand(){cout << "Hand created" << endl;};
 
-    ~Hand(){};
+    ~Hand(    ){
+        cout << "Hand destroyed" << endl;
+    };
 
     void printHand(){
         for (auto &c : _handCards){
@@ -134,7 +138,8 @@ class  AllCards : public Hand {
             for (int n=0;n < nDecks;++n){ 
                 for (auto const& s : suits){
                     for (auto const& r : ranks){ 
-                        unique_ptr<Card> card(new Card(s, r, _curID));                 
+                        // unique_ptr<Card> card(new Card(s, r, _curID));                 
+                        unique_ptr<Card> card = std::make_unique< Card>(s, r, _curID);                 
                         card->printCard();
                         dealCardToShoe(std::move(card));
                         // card.get()->printCard();
@@ -160,11 +165,14 @@ class  AllCards : public Hand {
         // };
 
         void dealIndexCardFromShoeToHand(int i, Hand hand){
+            // hand.moveCardToHand(std::move(_shoe._handCards[i]));
             hand.moveCardToHand(std::move(_shoe._handCards[i]));
+            // _shoe._handCards.erase(i);
 
             // std::move(_shoe._handCards).erase(i);  //need to resize so there are no holes
             // (_shoe._handCards).erase(i);  //need to resize so there are no holes
-    
+
+
         };
 
         long _curID=0;
