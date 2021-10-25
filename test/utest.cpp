@@ -21,11 +21,11 @@ TEST(CardInstantiation, CardDeal){
     // test_cards.dealIndexCardFromShoeToHand(1, testhand);
     // testhand.printHand();
 
-    test_cards._shoe._handCards[1]->printCard();
+    // test_cards._shoe._handCards[1]->printCard();
     // test_cards3.dealIndexCardFromShoeToHand(1, testhand);
     // hand.moveCardToHand(std::move(test_cards._shoe._handCards[2]));
     hand.moveCardToHand(std::move(test_cards._shoe._handCards[1]));
-    // hand.moveCardToHand(std::move(test_cards._shoe._handCards[1]));
+    hand.moveCardToHand(std::move(test_cards._shoe._handCards[2]));
     hand.printHand();
 
     

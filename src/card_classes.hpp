@@ -73,6 +73,7 @@ class Hand{
 
     void moveCardToHand(unique_ptr<Card> card){
         _handCards.emplace_back(std::move(card));
+        
     };
 
 
@@ -115,6 +116,7 @@ public:
 
     void dealIndexCardFromShoeToHand(int i, Hand hand){
         hand.moveCardToHand(std::move(_shoe._handCards[i]));
+        // _shoe._handCards.erase(i);  //need to resize so there are no holes
     };
 
     long _curID=0;
