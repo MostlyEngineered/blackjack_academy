@@ -62,6 +62,7 @@ void Hand::calculateHandValue(){
 
     if (_handValue > 21){            
         _handValue = 22; // 22 will be standard bust value
+        _isBust = true; // >21 is the bust condition
     }
 };
 
@@ -70,6 +71,7 @@ void Hand::moveCardToHand(unique_ptr<Card> card){
     // _handCards.emplace_back(std::move(card));
     _handCards.push_back(std::move(card));
     calculateHandValue();
+    updateHandSize();
 };
 
 void Hand::printHand(){
@@ -78,3 +80,18 @@ void Hand::printHand(){
     }
 };
 
+void Hand::updateHandSplittable(){ 
+    //This should be called after handsize is updated
+    //Splittable hands are hands of size 2 that are a pair (identical rank)
+    if (_handCards.size() == 2){
+        _isDoubleDownable = true; // double down only valid on initial cards ()
+        if (_handCards[0]->_cRank == _handCards[1]->_cRank){ // hand of 2 is pair
+            _isSplittable = true;
+        } else {
+            _isSplittable = false;
+        }
+    } else { // hand not equal to 2 cards
+        _isSplittable = false;
+        _isDoubleDownable = false;
+    }
+};

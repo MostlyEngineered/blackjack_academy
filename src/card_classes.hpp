@@ -71,14 +71,20 @@ class Hand{
     void calculateHandValue();
     void updateHandSize(){
         _handSize = _handCards.size();
+        updateHandSplittable();
     };
     void moveCardToHand(unique_ptr<Card> card);
+    void updateHandSplittable();
 
     //member values
-    int _handValue; //total value of one deck is 380
-    bool _isBust;
     vector<unique_ptr<Card>> _handCards;
+    int _handValue; //total value of one deck is 380
     int _handSize;
+    bool _isBust = false; //initialize to false as blank hands are not bust
+    bool _isSplittable = false; //initialize to false as blank hands are not splittable
+    bool _isDoubleDownable = false; //initialize to false as blank hands are not able to double down
+    bool _handDoubledDown = false; //only changes to true if player doubles down
+    
 
 };
 

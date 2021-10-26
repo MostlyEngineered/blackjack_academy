@@ -76,15 +76,45 @@ TEST(CardInstantiation, DealAllRandomCards){
     
 }
 
-TEST(PlayerInstantiation, DealAllRandomCards){
+TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
     AllCards test_cards = AllCards(1);
-    Player test_player;
-    Hand test_hand;
+    Hand hand1;
+    Hand hand2;
 
-    test_player.dealCardToPlayerNewHand(test_cards);
-    EXPECT_EQ(test_player._playerHands[0]->_handSize, 1);
+    test_cards.dealIndexCardFromShoeToHand(1, hand1); // 3C
+    EXPECT_EQ(hand1._isSplittable, false);
+    EXPECT_EQ(hand1._isDoubleDownable, false);
+    test_cards.dealIndexCardFromShoeToHand(13, hand1); // 3D
+    
+    EXPECT_EQ(hand1._isSplittable, true);
+    EXPECT_EQ(hand1._isDoubleDownable, true);
+    test_cards.dealIndexCardFromShoeToHand(15, hand1); // 6D
+    EXPECT_EQ(hand1._isSplittable, false);
+    EXPECT_EQ(hand1._isDoubleDownable, false);
+    // hand1.printHand();
+    
+    test_cards.dealIndexCardFromShoeToHand(1, hand2); // 4C
+    EXPECT_EQ(hand2._isSplittable, false);
+    EXPECT_EQ(hand2._isDoubleDownable, false);
+    test_cards.dealIndexCardFromShoeToHand(40, hand2); // 7S
+    EXPECT_EQ(hand2._isSplittable, false);
+    EXPECT_EQ(hand2._isDoubleDownable, true);
+    // hand2.printHand();
 
 }
+
+
+// TEST(PlayerInstantiation, DealAllRandomCards){
+//     AllCards test_cards = AllCards(1);
+//     Player test_player;
+//     Hand test_hand;
+
+//     test_player.dealCardToPlayerNewHand(test_cards);
+//     EXPECT_EQ(test_player._playerHands[0]->_handSize, 1);
+
+// }
+
+
 
 
 int main(int argc, char **argv){
