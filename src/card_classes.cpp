@@ -1,0 +1,80 @@
+#include <vector>
+#include <memory>
+#include <string>
+#include <iostream>
+#include <stdlib.h>     /* srand, rand */
+#include "card_classes.hpp"
+
+using std::string;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::unique_ptr;
+
+// vector<char> suits{ 'C', 'D', 'H', 'S'};
+// vector<char> ranks{ '2', '3', '4', '5', '6', 
+//     '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+
+void Card::calculateHardValue(){
+    _hardValue  = ((int)(_cRank)) - 48;  // All numbers (besides 'T') will be 2-9
+
+    if ((_hardValue==36) || (_hardValue==26) || (_hardValue==33) || (_hardValue==27)){
+        _hardValue = (int)10;
+    } else if (_hardValue==17){
+        _hardValue = (int)11;  // Each ace will be recalculated if there is a bust on hand calculation
+    }
+
+    if (_cRank == 'A'){
+        _isAce = true;
+
+    }
+};
+
+void Card::calculateRunningCountValue(){
+    if (_hardValue <= 6){
+        _runningCountValue = 1;
+    } else if ((_hardValue >= 7) || (_hardValue <= 9)){
+        _runningCountValue = 0;
+    } else{
+        _runningCountValue = -1;
+    }
+};
+
+void Hand::calculateHandValue(){
+    int aceCount = 0;
+    _handValue = 0;
+
+    for (int c=0; c<_handCards.size(); c++){
+        _handValue += _handCards[c]->_hardValue;
+        if (_handCards[c]->_isAce){
+            aceCount += 1;
+        }
+    }
+        
+    if (_handValue > 21){            
+        for (int a=aceCount; a>0 ; a-- ){
+            _handValue -= 10;  //decrement for each ace in the hand
+            if (_handValue <= 21){ //check if decrement makes it below 21
+                break;
+            }
+        }
+    }
+
+    if (_handValue > 21){            
+        _handValue = 22; // 22 will be standard bust value
+    }
+};
+
+
+void Hand::moveCardToHand(unique_ptr<Card> card){
+    // _handCards.emplace_back(std::move(card));
+    _handCards.push_back(std::move(card));
+    calculateHandValue();
+};
+
+void Hand::printHand(){
+    for (auto &c : _handCards){
+        c->printCard();
+    }
+};
+
