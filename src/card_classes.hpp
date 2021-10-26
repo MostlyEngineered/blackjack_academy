@@ -124,6 +124,8 @@ class  AllCards {
             dealIndexCardFromShoeToHand(RandIndex, hand);
             _shoe.updateHandSize();
             hand.updateHandSize();
+            cout << "print hand" << endl;
+            hand.printHand();
             // cout << "shoe size is " << _shoe._handSize << " after deal" << endl;
             // cout << "hand size is " << hand._handSize << " after deal" << endl;
             // cout << "rand index is " << RandIndex << " out of " << _shoe._handSize << " cards" << endl;
@@ -147,20 +149,21 @@ class Player {
         ~Player(){};
 
         Hand* makePlayerNewHand(){
-            Hand* hand;
+            Hand* hand = new Hand ;
             _playerHands.emplace_back(hand);
             return hand;
         };
 
-        // void dealCardToPlayerNewHand(AllCards houseCards){  
-        //     //append new hand to _playerHands and deal a random card from the shoe to it
-        //     Hand *hand;
-        //     hand = makePlayerNewHand();
-        //     houseCards.dealRandomCardFromShoeToHand(*hand);
+        void dealCardToPlayerNewHand(AllCards &houseCards){  
+            //append new hand to _playerHands and deal a random card from the shoe to it
+            Hand *hand;
+            hand = makePlayerNewHand();
+            houseCards.dealRandomCardFromShoeToHand(*hand);
             
-        // };
 
-        vector<Hand> _playerHands; //splits can make a player have multiple hands
+        };
+
+        vector<Hand*> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
         int playerNumber; //player number (this keeps track of player round resolution order)
 

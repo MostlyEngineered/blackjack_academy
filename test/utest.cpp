@@ -66,6 +66,9 @@ TEST(CardInstantiation, DealAllRandomCards){
     for (int i=0;i<52;i++){
         test_cards.dealRandomCardFromShoeToHand(hand);  // Deal all cards
     }
+
+    EXPECT_EQ(hand._handSize, 52);
+    EXPECT_EQ(test_cards._shoe._handSize, 0);
     // cout << " print hand" << endl;
     // hand.printHand();
     // cout << " print shoe" << endl;
@@ -74,10 +77,12 @@ TEST(CardInstantiation, DealAllRandomCards){
 }
 
 TEST(PlayerInstantiation, DealAllRandomCards){
-    // Player test_player;
-    
-    // test_player.dealCardToPlayerNewHand();
-    // test_player._playerHands[0].printHand();
+    AllCards test_cards = AllCards(1);
+    Player test_player;
+    Hand test_hand;
+
+    test_player.dealCardToPlayerNewHand(test_cards);
+    EXPECT_EQ(test_player._playerHands[0]->_handSize, 1);
 
 }
 
