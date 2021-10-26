@@ -39,7 +39,7 @@ class Card {
         
         void calculateHardValue();
         void calculateRunningCountValue();
-        void printCard(){cout << _cardID << ": " << _cRank << _suit << endl;};
+        void printCard(){cout << _cardID << ": " << _cRank << _suit << ", HV: " << _hardValue << ", RC: " << _runningCountValue << endl;};
 
         long _cardID;
         char _cRank;
@@ -49,6 +49,7 @@ class Card {
         bool _isAce = false;
         int _hardValue;
         int _runningCountValue;
+        
     private:
 
 
@@ -88,11 +89,11 @@ class Hand{
 
 };
 
-class  AllCards {
+class  HouseCards {
     private:
 
     public:
-        AllCards(int nDecks){
+        HouseCards(int nDecks){
             for (int n=0;n < nDecks;++n){ 
                 for (auto const& s : suits){
                     for (auto const& r : ranks){                 
@@ -117,10 +118,14 @@ class  AllCards {
 
         void dealIndexCardFromShoeToHand(int i, Hand &hand){
             vector<unique_ptr<Card>>::iterator it;
-
+            _runningCount += _shoe._handCards[i]->_runningCountValue;
             hand.moveCardToHand(std::move(_shoe._handCards[i]));
             it = _shoe._handCards.begin() + i;
             _shoe._handCards.erase(it);
+            _shoe.updateHandSize();
+            _trueCountValue = ((float)_runningCount * 52.) / (float)_shoe._handSize;
+
+
         };
 
         void dealRandomCardFromShoeToHand(Hand &hand){
@@ -138,12 +143,16 @@ class  AllCards {
 
         };
 
+        void printRunningCount(){cout << "running_count: " << _runningCount << endl;};
+
         vector<char> suits{ 'C', 'D', 'H', 'S'};
         vector<char> ranks{ '2', '3', '4', '5', '6', 
             '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
         long _curID=0;
         Hand _shoe;
         Hand _discardPile;
+        int _runningCount = 0; //Running count starts at 0
+        float _trueCountValue = 0.0; //True count is running count divided by decks left
 
 };
 
@@ -160,7 +169,7 @@ class Player {
             return hand;
         };
 
-        void dealCardToPlayerNewHand(AllCards &houseCards){  
+        void dealCardToPlayerNewHand(HouseCards &houseCards){  
             //append new hand to _playerHands and deal a random card from the shoe to it
             Hand *hand;
             hand = makePlayerNewHand();

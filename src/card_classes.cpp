@@ -31,9 +31,12 @@ void Card::calculateHardValue(){
 };
 
 void Card::calculateRunningCountValue(){
+    // These are the standard running count values
+    // These are usually calculated from player standpoint by adding
+    // These will be done by the count in the shoe in this code so they will be subtracted
     if (_hardValue <= 6){
         _runningCountValue = 1;
-    } else if ((_hardValue >= 7) || (_hardValue <= 9)){
+    } else if ((_hardValue >= 7) && (_hardValue <= 9)){
         _runningCountValue = 0;
     } else{
         _runningCountValue = -1;
