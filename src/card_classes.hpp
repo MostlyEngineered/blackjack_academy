@@ -11,13 +11,6 @@ using std::vector;
 using std::weak_ptr;
 using std::unique_ptr;
 
-
-vector<char> suits{ 'C', 'D', 'H', 'S'};
-vector<char> ranks{ '2', '3', '4', '5', '6', 
-        '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
-
-
-
 //Rule of 3
 // destructor
 // copy constructor
@@ -31,37 +24,22 @@ class Card {
     public:
 
         Card(char suit, char cRank, double cardID){
-            cout << "card created" << endl;
+            // cout << "card created" << endl;
             _cardID = cardID;
             _suit = suit;
             _cRank = cRank;
             calculateHardValue();
+            calculateRunningCountValue();
         };
 
         ~Card(){
-            cout << "card destroyed" << endl;
+            // cout << "card destroyed" << endl;
             // delete this;
         };
-
-        void calculateHardValue(){
-            _hardValue  = ((int)(_cRank)) - 48;  // All numbers (besides 'T') will be 2-9
         
-            if ((_hardValue==36) || (_hardValue==26) || (_hardValue==33) || (_hardValue==27)){
-                _hardValue = (int)10;
-            } else if (_hardValue==17){
-                _hardValue = (int)11;  // Each ace will be recalculated if there is a bust on hand calculation
-            }
-
-            if (_cRank == 'A'){
-                _isAce = true;
-            }
-
-
-        };
-
-        void printCard(){
-            cout << _cardID << ": " << _cRank << _suit << endl;
-        };
+        void calculateHardValue();
+        void calculateRunningCountValue();
+        void printCard(){cout << _cardID << ": " << _cRank << _suit << endl;};
 
         long _cardID;
         char _cRank;
@@ -70,6 +48,7 @@ class Card {
         bool _discarded = false;
         bool _isAce = false;
         int _hardValue;
+        int _runningCountValue;
     private:
 
 
@@ -80,76 +59,46 @@ class Hand{
 
     public:
 
-    Hand(){cout << "Hand created" << endl;};
+    Hand(){
+        // cout << "Hand created" << endl;
+        };
 
-    ~Hand(    ){
-        cout << "Hand destroyed" << endl;
+    ~Hand(){
+        // cout << "Hand destroyed" << endl;
+        };
+
+    void printHand();
+    void calculateHandValue();
+    void updateHandSize(){
+        _handSize = _handCards.size();
     };
+    void moveCardToHand(unique_ptr<Card> card);
 
-    void printHand(){
-        for (auto &c : _handCards){
-            c->printCard();
-        }
-    };
-
-    void calculateHandValue(){
-        int aceCount = 0;
-        _handValue = 0;
-
-        for (int c=0; c<_handCards.size(); c++){
-            _handValue += _handCards[c]->_hardValue;
-            if (_handCards[c]->_isAce){
-                aceCount += 1;
-            }
-        }
-            
-        if (_handValue > 21){            
-            for (int a=aceCount; a>0 ; a-- ){
-                _handValue -= 10;  //decrement for each ace in the hand
-                if (_handValue <= 21){ //check if decrement makes it below 21
-                    break;
-                }
-            }
-        }
-
-        if (_handValue > 21){            
-            _handValue = 22; // 22 will be standard bust value
-        }
-    };
-
-    void moveCardToHand(unique_ptr<Card> card){
-        _handCards.emplace_back(std::move(card));
-        calculateHandValue();
-    };
-
-
+    //member values
     int _handValue; //total value of one deck is 380
     bool _isBust;
     vector<unique_ptr<Card>> _handCards;
+    int _handSize;
 
 };
 
-class  AllCards : public Hand {
+class  AllCards {
     private:
 
     public:
-
         AllCards(int nDecks){
             for (int n=0;n < nDecks;++n){ 
                 for (auto const& s : suits){
-                    for (auto const& r : ranks){ 
-                        // unique_ptr<Card> card(new Card(s, r, _curID));                 
+                    for (auto const& r : ranks){                 
                         unique_ptr<Card> card = std::make_unique< Card>(s, r, _curID);                 
                         card->printCard();
                         dealCardToShoe(std::move(card));
-                        // card.get()->printCard();
-                        // cout << card->_suit;
-                        // cout << (card->_suit);
                         _curID += 1;
 
                     }
                 }
-            }        
+            }
+            _shoe.updateHandSize();        
         };
 
         void discardCard(unique_ptr<Card> card){
@@ -160,25 +109,59 @@ class  AllCards : public Hand {
             _shoe.moveCardToHand(std::move(card));
         };
 
-        // void dealCardFromShoeToHand(unique_ptr<Card> card, Hand hand){
-        //     hand.moveCardToHand(std::move(card));
-        // };
+        void dealIndexCardFromShoeToHand(int i, Hand &hand){
+            vector<unique_ptr<Card>>::iterator it;
 
-        void dealIndexCardFromShoeToHand(int i, Hand hand){
-            // hand.moveCardToHand(std::move(_shoe._handCards[i]));
             hand.moveCardToHand(std::move(_shoe._handCards[i]));
-            // _shoe._handCards.erase(i);
+            it = _shoe._handCards.begin() + i;
+            _shoe._handCards.erase(it);
+        };
 
-            // std::move(_shoe._handCards).erase(i);  //need to resize so there are no holes
-            // (_shoe._handCards).erase(i);  //need to resize so there are no holes
-
+        void dealRandomCardFromShoeToHand(Hand &hand){
+            // _shoe.updateHandSize(); // this is done after each modifying action
+            int RandIndex = rand() % _shoe._handSize;
+            
+            dealIndexCardFromShoeToHand(RandIndex, hand);
+            _shoe.updateHandSize();
+            hand.updateHandSize();
+            // cout << "shoe size is " << _shoe._handSize << " after deal" << endl;
+            // cout << "hand size is " << hand._handSize << " after deal" << endl;
+            // cout << "rand index is " << RandIndex << " out of " << _shoe._handSize << " cards" << endl;
 
         };
 
+        vector<char> suits{ 'C', 'D', 'H', 'S'};
+        vector<char> ranks{ '2', '3', '4', '5', '6', 
+            '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
         long _curID=0;
         Hand _shoe;
         Hand _discardPile;
 
 };
 
-    
+class Player {
+    private:
+
+    public:
+        Player(){};
+        ~Player(){};
+
+        Hand* makePlayerNewHand(){
+            Hand* hand;
+            _playerHands.emplace_back(hand);
+            return hand;
+        };
+
+        // void dealCardToPlayerNewHand(AllCards houseCards){  
+        //     //append new hand to _playerHands and deal a random card from the shoe to it
+        //     Hand *hand;
+        //     hand = makePlayerNewHand();
+        //     houseCards.dealRandomCardFromShoeToHand(*hand);
+            
+        // };
+
+        vector<Hand> _playerHands; //splits can make a player have multiple hands
+        long long int _playerMoney; //how much money the player has
+        int playerNumber; //player number (this keeps track of player round resolution order)
+
+};

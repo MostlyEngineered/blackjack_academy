@@ -39,26 +39,47 @@ TEST(CardInstantiation, CheckHandValues){
     Hand hand1;
     Hand hand2;
 
-    // test_cards._shoe._handCards[1]->printCard();
-    // test_cards._shoe._handCards[4]->printCard();
-    // test_cards._shoe._handCards[9]->printCard();
+    test_cards.dealIndexCardFromShoeToHand(1, hand1); // 3
+    test_cards.dealIndexCardFromShoeToHand(3, hand1); // 6
+    test_cards.dealIndexCardFromShoeToHand(7, hand1); // J
 
-    cout << "Start deal" << endl ;
-    hand1.moveCardToHand(std::move(test_cards._shoe._handCards[1])); // 3
-    hand1.moveCardToHand(std::move(test_cards._shoe._handCards[4])); // 6
-    hand1.moveCardToHand(std::move(test_cards._shoe._handCards[9])); // J
-
+    // Deal hand 1
     EXPECT_EQ(hand1._handValue, 19);
-    
-    hand2.moveCardToHand(std::move(test_cards._shoe._handCards[11]));
-    hand2.moveCardToHand(std::move(test_cards._shoe._handCards[12])); //Blackjack
-    hand2.moveCardToHand(std::move(test_cards._shoe._handCards[25])); //2nd ace makes this 12
+    test_cards.dealIndexCardFromShoeToHand(8, hand2); // K
+    test_cards.dealIndexCardFromShoeToHand(8, hand2); // A, Blackjack
 
+    // Deal hand 2
+    EXPECT_EQ(hand2._handValue, 21);
+    test_cards.dealIndexCardFromShoeToHand(20, hand2); // A -> use soft value
     EXPECT_EQ(hand2._handValue, 12);
-
-    cout << "End deal" << endl ;
+    test_cards.dealIndexCardFromShoeToHand(44, hand2); // K -> 22, bust
+    EXPECT_EQ(hand2._handValue, 22);
+    test_cards.dealIndexCardFromShoeToHand(43, hand2); // Q -> bust +10 = bust
+    EXPECT_EQ(hand2._handValue, 22);
+    
 }
 
+TEST(CardInstantiation, DealAllRandomCards){
+    AllCards test_cards = AllCards(1);
+    Hand hand;
+
+    for (int i=0;i<52;i++){
+        test_cards.dealRandomCardFromShoeToHand(hand);  // Deal all cards
+    }
+    // cout << " print hand" << endl;
+    // hand.printHand();
+    // cout << " print shoe" << endl;
+    // test_cards._shoe.printHand();
+    
+}
+
+TEST(PlayerInstantiation, DealAllRandomCards){
+    // Player test_player;
+    
+    // test_player.dealCardToPlayerNewHand();
+    // test_player._playerHands[0].printHand();
+
+}
 
 
 int main(int argc, char **argv){
