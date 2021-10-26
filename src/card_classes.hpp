@@ -144,33 +144,20 @@ class  HouseCards {
         };
 
         void dealIndexCardFromShoeToHand(int i, Hand &hand){
+            dealIndexCardFromShoeToHand(i, hand, true);
+        };
+
+        void dealIndexCardFromShoeToHand(int i, Hand &hand, bool isFaceUp){
             vector<unique_ptr<Card>>::iterator it;
             _runningCount += _shoe._handCards[i]->_runningCountValue;
+            _shoe._handCards[i]->_isFaceUp = isFaceUp;
             hand.moveCardToHand(std::move(_shoe._handCards[i]));
             it = _shoe._handCards.begin() + i;
             _shoe._handCards.erase(it);
             _shoe.updateHandSize();
             _trueCountValue = ((float)_runningCount * 52.) / (float)_shoe._handSize;
-
-
         };
 
-        // void dealRandomCardFromShoeToHand(Hand &hand){
-        //     // _shoe.updateHandSize(); // this is done after each modifying action
-        //     int RandIndex = rand() % _shoe._handSize;
-            
-        //     dealIndexCardFromShoeToHand(RandIndex, hand);
-        //     _shoe.updateHandSize();
-        //     hand.updateHandSize();
-        //     cout << "print hand" << endl;
-        //     hand.printHand();
-
-        // };
-
-        // void dealRandomCardFromShoeToHand(Hand &hand, bool isFaceUp){
-        //     dealRandomCardFromShoeToHand(hand);
-
-        // };
 
         void dealRandomCardFromShoeToHand(Hand &hand, bool isFaceUp){
             // _shoe.updateHandSize(); // this is done after each modifying action
@@ -181,7 +168,6 @@ class  HouseCards {
             hand.updateHandSize();
             cout << "print hand" << endl;
             hand.printHand();
-
         };
 
         void dealRandomCardFromShoeToHand(Hand &hand){
@@ -259,7 +245,7 @@ class GameRound{
         int _numComputerPlayers; //this is 0 or more
         int _numPlayers; //human players + computer players + dealer
         int _numGamblers; //human players + computer players (is _numPlayers - 1)
-        int _curPlayerTurn = 1; //initialize as first gambler turn (dealer is player 0, but goes last)
+        int _curPlayerTurn = 0; //initialize as first gambler turn (dealer is last player)
         int _roundFinished = false; //Change to true after dealer has finished
 
 
@@ -267,24 +253,34 @@ class GameRound{
 
 
 class Game{
-    // Dealer is player 0.
-    // Human players are first players.
-
+    // Dealer is last player.
+    
 
     private:
 
     public:
         Game(int numPlayers, long long int initialPlayerMoney, int numDecks){
-            //add logic to disallow <=1 and other bad values
+            //add logic to disallow <=1 and other bad values {}{}{}{}
 
             _numPlayers = numPlayers;
             _initialPlayerMoney = initialPlayerMoney;
-            HouseCards _houseCards = HouseCards(numDecks);
+            HouseCards _houseCards = HouseCards(numDecks);  // Prep all the cards
+
+
+
 
         };
         // Game();
 
         // ~Game();
+
+
+        //vector.insert(begin(), 1, val) //ref for adding dealer
+
+        void seatPlayers(){
+            //instantiate all players and add them to the appropriate seats
+
+        };
 
         void dealInitialCards(){
             // deal all players one card (face up, starting at player 1), dealer gets one card face down
