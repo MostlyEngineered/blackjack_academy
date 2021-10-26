@@ -30,7 +30,6 @@ TEST(CardInstantiation, CheckCardValues){
     EXPECT_EQ(queen._hardValue, 10);
     EXPECT_EQ(king._hardValue, 10);
     EXPECT_EQ(ace._hardValue, 11);
-
 }
 
 
@@ -39,21 +38,25 @@ TEST(CardInstantiation, CheckHandValues){
     Hand hand1;
     Hand hand2;
 
+    // Deal hand 1
     test_cards.dealIndexCardFromShoeToHand(1, hand1); // 3
     test_cards.dealIndexCardFromShoeToHand(3, hand1); // 6
+    EXPECT_EQ(hand1._isBlackjack, false);
     test_cards.dealIndexCardFromShoeToHand(7, hand1); // J
-
-    // Deal hand 1
     EXPECT_EQ(hand1._handValue, 19);
-    test_cards.dealIndexCardFromShoeToHand(8, hand2); // K
-    test_cards.dealIndexCardFromShoeToHand(8, hand2); // A, Blackjack
+    EXPECT_EQ(hand1._isBlackjack, false);
 
     // Deal hand 2
+    test_cards.dealIndexCardFromShoeToHand(8, hand2); // K
+    test_cards.dealIndexCardFromShoeToHand(8, hand2); // A, Blackjack
+    EXPECT_EQ(hand2._isBlackjack, true);
     EXPECT_EQ(hand2._handValue, 21);
     test_cards.dealIndexCardFromShoeToHand(20, hand2); // A -> use soft value
     EXPECT_EQ(hand2._handValue, 12);
+    EXPECT_EQ(hand2._isBlackjack, false);
     test_cards.dealIndexCardFromShoeToHand(44, hand2); // K -> 22, bust
     EXPECT_EQ(hand2._handValue, 22);
+    EXPECT_EQ(hand2._isBlackjack, false);
     test_cards.dealIndexCardFromShoeToHand(43, hand2); // Q -> bust +10 = bust
     EXPECT_EQ(hand2._handValue, 22);
     
@@ -66,14 +69,9 @@ TEST(CardInstantiation, DealAllRandomCards){
     for (int i=0;i<52;i++){
         test_cards.dealRandomCardFromShoeToHand(hand);  // Deal all cards
     }
-
     EXPECT_EQ(hand._handSize, 52);
     EXPECT_EQ(test_cards._shoe._handSize, 0);
-    // cout << " print hand" << endl;
-    // hand.printHand();
-    // cout << " print shoe" << endl;
-    // test_cards._shoe.printHand();
-    
+
 }
 
 TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
@@ -124,7 +122,9 @@ TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
 
 
 
-
+TEST(PlayerInstantiation, MakePlayer){
+    Player player = Player('H');
+}
 
 
 int main(int argc, char **argv){

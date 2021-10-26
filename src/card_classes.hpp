@@ -44,7 +44,7 @@ class Card {
         long _cardID;
         char _cRank;
         char _suit;
-        bool _faceUp = false;
+        bool _isFaceUp = false;
         bool _discarded = false;
         bool _isAce = false;
         int _hardValue;
@@ -73,11 +73,35 @@ class Hand{
     void updateHandSize(){
         _handSize = _handCards.size();
         updateHandSplittable();
+        updatePossibleActions();
     };
     void moveCardToHand(unique_ptr<Card> card);
     void updateHandSplittable();
+    
+    void updatePossibleActions(){
+        
+        if ((_isBust) || (_isFinished)){
+            possibleActions = {};
+        } else{ //if hand not Bust
+            possibleActions = {'H', 'S'};
+
+            if (_isSplittable){
+                possibleActions.emplace_back('P');
+            }
+            if (_isDoubleDownable){
+                possibleActions.emplace_back('D');
+            }
+            if (_isSurrenderable){
+                possibleActions.emplace_back('R');
+            }        
+        }
+
+
+    }
 
     //member values
+    // vector<char> actionsList = { 'H', 'S', 'P', 'D', 'R'}; //Possible actions are: Hit, Stay, Splittable, Doubledown, Surrender
+    vector<char> possibleActions;
     vector<unique_ptr<Card>> _handCards;
     int _handValue; //total value of one deck is 380
     int _handSize;
@@ -85,6 +109,9 @@ class Hand{
     bool _isSplittable = false; //initialize to false as blank hands are not splittable
     bool _isDoubleDownable = false; //initialize to false as blank hands are not able to double down
     bool _handDoubledDown = false; //only changes to true if player doubles down
+    bool _isBlackjack = false;
+    bool _isSurrenderable = false;
+    bool _isFinished = false; // only changes to true when a stop condition is reached (Stay, Doubledown, Bust, Surrender)
     
 
 };
@@ -128,7 +155,24 @@ class  HouseCards {
 
         };
 
-        void dealRandomCardFromShoeToHand(Hand &hand){
+        // void dealRandomCardFromShoeToHand(Hand &hand){
+        //     // _shoe.updateHandSize(); // this is done after each modifying action
+        //     int RandIndex = rand() % _shoe._handSize;
+            
+        //     dealIndexCardFromShoeToHand(RandIndex, hand);
+        //     _shoe.updateHandSize();
+        //     hand.updateHandSize();
+        //     cout << "print hand" << endl;
+        //     hand.printHand();
+
+        // };
+
+        // void dealRandomCardFromShoeToHand(Hand &hand, bool isFaceUp){
+        //     dealRandomCardFromShoeToHand(hand);
+
+        // };
+
+        void dealRandomCardFromShoeToHand(Hand &hand, bool isFaceUp){
             // _shoe.updateHandSize(); // this is done after each modifying action
             int RandIndex = rand() % _shoe._handSize;
             
@@ -137,9 +181,11 @@ class  HouseCards {
             hand.updateHandSize();
             cout << "print hand" << endl;
             hand.printHand();
-            // cout << "shoe size is " << _shoe._handSize << " after deal" << endl;
-            // cout << "hand size is " << hand._handSize << " after deal" << endl;
-            // cout << "rand index is " << RandIndex << " out of " << _shoe._handSize << " cards" << endl;
+
+        };
+
+        void dealRandomCardFromShoeToHand(Hand &hand){
+            dealRandomCardFromShoeToHand(hand, true);
 
         };
 
@@ -160,7 +206,9 @@ class Player {
     private:
 
     public:
-        Player(){};
+        Player(char playerType){
+            _playerType = playerType;
+        };
         ~Player(){};
 
         Hand* makePlayerNewHand(){
@@ -180,6 +228,81 @@ class Player {
 
         vector<Hand*> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
-        int playerNumber; //player number (this keeps track of player round resolution order)
+        int _playerNumber; //player number (this keeps track of player round resolution order)
+        char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
+        bool _isDealer = false;
+        bool _isHuman;
+        bool _isFinished = false; //player is finished when all his current round hands are finished, when hands are cleaned up this should be reset back to false
+
+};
+
+
+class GameRound{
+    private:
+
+    public:
+        GameRound(){};
+        
+        void incrementPlayerTurn(){
+            _curPlayerTurn += 1;
+            if (_curPlayerTurn>_numPlayers){
+                _curPlayerTurn = 0;
+            }
+        };
+
+        void resolvePayouts(){
+            // resolve payouts for the round after dealer has taken turn
+
+        };
+
+        int _numHumanPlayers; //this is at least 1
+        int _numComputerPlayers; //this is 0 or more
+        int _numPlayers; //human players + computer players + dealer
+        int _numGamblers; //human players + computer players (is _numPlayers - 1)
+        int _curPlayerTurn = 1; //initialize as first gambler turn (dealer is player 0, but goes last)
+        int _roundFinished = false; //Change to true after dealer has finished
+
+
+};
+
+
+class Game{
+    // Dealer is player 0.
+    // Human players are first players.
+
+
+    private:
+
+    public:
+        Game(int numPlayers, long long int initialPlayerMoney, int numDecks){
+            //add logic to disallow <=1 and other bad values
+
+            _numPlayers = numPlayers;
+            _initialPlayerMoney = initialPlayerMoney;
+            HouseCards _houseCards = HouseCards(numDecks);
+
+        };
+        // Game();
+
+        // ~Game();
+
+        void dealInitialCards(){
+            // deal all players one card (face up, starting at player 1), dealer gets one card face down
+            // deal all players second card (face up, starting at player 1), dealer gets one card face up
+            // for (auto player : player)
+        };
+
+        int _numHumanPlayers; //this is at least 1
+        int _numComputerPlayers; //this is 0 or more
+        int _numPlayers; //human players + computer players + dealer
+        int _numGamblers; //human players + computer players (is _numPlayers - 1)
+        
+        int _roundNum = 1;
+
+        long long int _initialPlayerMoney;
+        long long int _initialCasinoInitialMoney;
+
+        GameRound _curRound;
+        
 
 };

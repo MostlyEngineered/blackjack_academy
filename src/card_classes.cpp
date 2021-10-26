@@ -66,7 +66,17 @@ void Hand::calculateHandValue(){
     if (_handValue > 21){            
         _handValue = 22; // 22 will be standard bust value
         _isBust = true; // >21 is the bust condition
+        _isFinished = true; // No actions available after bust
     }
+
+    if ( (_handValue == 21) && (_handCards.size()==2)){
+        //This is the blackjack condition 
+        _isBlackjack = true; 
+    } else {
+        //player can hit past blackjack if they want, need to be able to revert condition to not blackjack
+        _isBlackjack = false; 
+    }
+
 };
 
 
@@ -87,7 +97,8 @@ void Hand::updateHandSplittable(){
     //This should be called after handsize is updated
     //Splittable hands are hands of size 2 that are a pair (identical rank)
     if (_handCards.size() == 2){
-        _isDoubleDownable = true; // double down only valid on initial cards ()
+        _isDoubleDownable = true; // double down only valid on initial cards 
+        _isSurrenderable = true;  // surrender only valid on initial cards
         if (_handCards[0]->_cRank == _handCards[1]->_cRank){ // hand of 2 is pair
             _isSplittable = true;
         } else {
@@ -96,5 +107,6 @@ void Hand::updateHandSplittable(){
     } else { // hand not equal to 2 cards
         _isSplittable = false;
         _isDoubleDownable = false;
+        _isSurrenderable = false;
     }
 };
