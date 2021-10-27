@@ -221,17 +221,18 @@ class Player {
 
         ~Player(){};
 
-        Hand* makePlayerNewHand(){
-            Hand* hand = new Hand ;
+        void makePlayerNewHand(){
+            // Hand* hand = new Hand ;
+            unique_ptr<Hand> hand = std::make_unique<Hand>();
             _playerHands.emplace_back(std::move(hand));
-            return hand;
+            // return hand;
         };
 
         void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
             //append new hand to _playerHands and deal a random card from the shoe to it
-            Hand *hand;
-            hand = makePlayerNewHand();
-            houseCards.dealRandomCardFromShoeToHand(*hand, isFaceUp);
+            // Hand *hand;
+            makePlayerNewHand();
+            houseCards.dealRandomCardFromShoeToHand(*_playerHands.back(), isFaceUp);
             
         };
 
