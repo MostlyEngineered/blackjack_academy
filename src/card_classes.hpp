@@ -203,13 +203,25 @@ class Player {
             return hand;
         };
 
-        void dealCardToPlayerNewHand(HouseCards &houseCards){  
+        // void dealCardToPlayerNewHand(HouseCards &houseCards){  
+        //     //append new hand to _playerHands and deal a random card from the shoe to it
+        //     Hand *hand;
+        //     hand = makePlayerNewHand();
+        //     houseCards.dealRandomCardFromShoeToHand(*hand);
+            
+        // };
+
+
+        void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
             //append new hand to _playerHands and deal a random card from the shoe to it
             Hand *hand;
             hand = makePlayerNewHand();
-            houseCards.dealRandomCardFromShoeToHand(*hand);
+            houseCards.dealRandomCardFromShoeToHand(*hand, isFaceUp);
             
+        };
 
+        void dealCardToPlayerNewHand(HouseCards &houseCards){  
+            dealCardToPlayerNewHand(houseCards, true);
         };
 
         vector<Hand*> _playerHands; //splits can make a player have multiple hands
@@ -265,7 +277,9 @@ class Game{
             _numPlayers = numPlayers;
             _initialPlayerMoney = initialPlayerMoney;
             HouseCards _houseCards = HouseCards(numDecks);  // Prep all the cards
-
+            seatPlayers();
+            // dealInitialCards();
+            // _houseCards._shoe.printHand();
 
 
 
@@ -279,14 +293,35 @@ class Game{
 
         void seatPlayers(){
             //instantiate all players and add them to the appropriate seats
+            for (int p=0;p<_numPlayers;p++){
+                if (p == _numPlayers){
+                    _players.push_back(Player('H'));
+                } else {
+                    //can shuffle players prior to adding dealer
+                    _players.push_back(Player('D'));
+                }
 
+
+            }
         };
 
-        void dealInitialCards(){
-            // deal all players one card (face up, starting at player 1), dealer gets one card face down
-            // deal all players second card (face up, starting at player 1), dealer gets one card face up
-            // for (auto player : player)
-        };
+        // void dealInitialCards(){
+        //     // deal all players one card (face up, starting at player 1), dealer gets one card face down
+        //     // deal all players second card (face up, starting at player 1), dealer gets one card face up
+        //     for (auto player : _players){
+        //         //deal first card, face down to dealer, face up to players
+        //         player._isDealer==true{
+        //             player.dealCardToPlayerNewHand(_housecards, false);
+        //         } else{
+        //             player.dealCardToPlayerNewHand(_housecards, true);
+        //         }
+        //     }
+
+        //     for (auto player : _players){
+        //         //deal second card face up to all
+        //         player.dealCardToPlayerNewHand(_housecards, true);
+        //     }
+        // };
 
         int _numHumanPlayers; //this is at least 1
         int _numComputerPlayers; //this is 0 or more
@@ -299,6 +334,7 @@ class Game{
         long long int _initialCasinoInitialMoney;
 
         GameRound _curRound;
+        vector<Player> _players;
         
 
 };
