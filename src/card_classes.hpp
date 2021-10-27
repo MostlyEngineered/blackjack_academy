@@ -126,7 +126,7 @@ class  HouseCards {
             for (int n=0;n < nDecks;++n){ 
                 for (auto const& s : suits){
                     for (auto const& r : ranks){                 
-                        unique_ptr<Card> card = std::make_unique< Card>(s, r, _curID);                 
+                        unique_ptr<Card> card = std::make_unique<Card>(s, r, _curID);                 
                         // card->printCard();
                         dealCardToShoe(std::move(card));
                         _curID += 1;
@@ -135,7 +135,7 @@ class  HouseCards {
                 }
             }
             _shoe.updateHandSize();     
-            cout << "House Cards constructed" << endl;   
+            // cout << "House Cards constructed" << endl;   
         };
 
         void discardCard(unique_ptr<Card> card){
@@ -240,10 +240,20 @@ class Player {
         };
 
         void printPlayerData(){
-            cout << "Player " << _playerNumber << ":"<< endl;
+            string playerTag;
+            if (_isDealer){
+                playerTag = " (D)";
+            } else if (_isHuman) {
+                playerTag = " (H)";
+            } else {
+                playerTag = "";
+            }
+
+            cout << "Player " << _playerNumber << ":" << playerTag << endl;
             cout << "Money: " << _playerMoney << endl;
             // for (auto hand : _playerHands){
-            for (int h=0;h<=_playerHands.size();h++ ){
+            for (int h=0;h<_playerHands.size();h++ ){
+                cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
                 _playerHands[h]->printHand();
             }
         }
