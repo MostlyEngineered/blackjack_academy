@@ -123,7 +123,7 @@ TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
 
 
 TEST(PlayerInstantiation, MakePlayer){
-    Player player = Player('H');
+    Player player = Player('H', 1);
 }
 
 
