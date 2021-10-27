@@ -61,7 +61,7 @@ class Hand{
     public:
 
     Hand(){
-        // cout << "Hand created" << endl;
+        cout << "Hand created" << endl;
         };
 
     ~Hand(){
@@ -121,7 +121,7 @@ class  HouseCards {
 
     public:
         HouseCards(){};
-
+        ~HouseCards(){cout << "House Cards destructed" << endl;};
         HouseCards(int nDecks){
             for (int n=0;n < nDecks;++n){ 
                 for (auto const& s : suits){
@@ -163,7 +163,7 @@ class  HouseCards {
 
         void dealRandomCardFromShoeToHand(Hand &hand, bool isFaceUp){
             // _shoe.updateHandSize(); // this is done after each modifying action
-            int RandIndex = rand() % _shoe._handSize;
+            int RandIndex = rand() % _shoe._handSize; //_shoe._handSize is bad value
             
             dealIndexCardFromShoeToHand(RandIndex, hand);
             _shoe.updateHandSize();
@@ -201,7 +201,7 @@ class Player {
 
         Hand* makePlayerNewHand(){
             Hand* hand = new Hand ;
-            _playerHands.emplace_back(hand);
+            _playerHands.emplace_back(std::move(hand));
             return hand;
         };
 
