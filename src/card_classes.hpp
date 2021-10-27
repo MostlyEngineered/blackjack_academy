@@ -223,8 +223,8 @@ class Player {
 
         void makePlayerNewHand(){
             // Hand* hand = new Hand ;
-            // unique_ptr<Hand> hand = std::make_unique<Hand>();
-            unique_ptr<Hand> hand;
+            std::shared_ptr<Hand> hand;
+            // unique_ptr<Hand> hand;
             _playerHands.push_back(std::move(hand));
             // return hand;
         };
@@ -237,9 +237,9 @@ class Player {
             
         };
 
-        void dealCardToPlayerNewHand(HouseCards &houseCards){  
-            dealCardToPlayerNewHand(houseCards, true);
-        };
+        // void dealCardToPlayerNewHand(HouseCards &houseCards){  
+        //     dealCardToPlayerNewHand(houseCards, true);
+        // };
 
         void printPlayerData(){
             string playerTag;
@@ -260,7 +260,7 @@ class Player {
             }
         }
 
-        vector<unique_ptr<Hand>> _playerHands; //splits can make a player have multiple hands
+        vector<std::shared_ptr<Hand>> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
         int _playerNumber; //player number (this keeps track of player round resolution order)
         char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
@@ -320,7 +320,7 @@ class Game{
             _numGamblers = _numHumanPlayers + _numComputerPlayers; //human players + computer players (is _numPlayers - 1)
             _numPlayers = _numGamblers + 1; //human players + computer players + dealer
 
-            unique_ptr<HouseCards> houseCards = std::make_unique<HouseCards>(_numDecks); 
+            std::shared_ptr<HouseCards> houseCards = std::make_unique<HouseCards>(_numDecks); 
             _houseCards = std::move(houseCards);
             seatPlayers();
             
@@ -371,17 +371,19 @@ class Game{
             for (auto player : _players){
                 //deal first card, face down to dealer, face up to players
                 if (player._isDealer==true){
-                    player.dealCardToPlayerNewHand(*(this->_houseCards), false);
+                    player.makePlayerNewHand();
+                    // player.dealCardToPlayerNewHand((this->_houseCards->_shoe), false);
 
                 } else{
-                    player.dealCardToPlayerNewHand(*(this->_houseCards), true);
+                    player.makePlayerNewHand();
+                    // player.dealCardToPlayerNewHand((this->_houseCards->_shoe), true);
 
                 }
             }
 
             for (auto player : _players){
                 //deal second card face up to all
-                player.dealCardToPlayerNewHand(*(this->_houseCards), true);
+                // player.dealCardToPlayerNewHand(*(this->_houseCards), true);
             }
         };
 
@@ -399,7 +401,7 @@ class Game{
         vector<Player> _players;
         int _numDecks;
 
-        unique_ptr<HouseCards> _houseCards;
+        std::shared_ptr<HouseCards> _houseCards;
         
 
 };
