@@ -223,8 +223,9 @@ class Player {
 
         void makePlayerNewHand(){
             // Hand* hand = new Hand ;
-            unique_ptr<Hand> hand = std::make_unique<Hand>();
-            _playerHands.emplace_back(std::move(hand));
+            // unique_ptr<Hand> hand = std::make_unique<Hand>();
+            unique_ptr<Hand> hand;
+            _playerHands.push_back(std::move(hand));
             // return hand;
         };
 
@@ -259,7 +260,7 @@ class Player {
             }
         }
 
-        vector<Hand*> _playerHands; //splits can make a player have multiple hands
+        vector<unique_ptr<Hand>> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
         int _playerNumber; //player number (this keeps track of player round resolution order)
         char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
