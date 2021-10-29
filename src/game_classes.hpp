@@ -65,7 +65,7 @@ class Player {
             //append new hand to _playerHands and deal a random card from the shoe to it
             // Hand *hand;
             makePlayerNewHand();
-            houseCards.dealRandomCardFromShoeToHand(*_playerHands.back(), isFaceUp);
+            houseCards.dealRandomCardFromShoeToHand(_playerHands.back(), isFaceUp);
             
         };
 
@@ -138,15 +138,14 @@ class Game{
         Game(int numPlayers, long long int initialPlayerMoney, int numDecks){
             //add logic to disallow <=1 and other bad values {}{}{}{}
             // This Constructor will be a single human player vs dealer
-
-
+            
             _numPlayers = numPlayers;
             _initialPlayerMoney = initialPlayerMoney;
             _numDecks=numDecks;
             _numHumanPlayers = 1; //this is at least 1
             _numComputerPlayers = 0; //this is 0 or more
             _numGamblers = _numHumanPlayers + _numComputerPlayers; //human players + computer players (is _numPlayers - 1)
-            _numPlayers = _numGamblers + 1; //human players + computer players + dealer
+            // _numPlayers = _numGamblers + 1; //human players + computer players + dealer
 
             std::unique_ptr<HouseCards> houseCards = std::make_unique<HouseCards>(_numDecks); 
             // _houseCards = std::move(houseCards);
@@ -233,6 +232,6 @@ class Game{
         int _numDecks;
 
         std::unique_ptr<HouseCards> _houseCards;
-        // HouseCards _houseCards;
+        // HouseCards _houseCards(_numDecks);
 
 };
