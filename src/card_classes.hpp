@@ -178,6 +178,22 @@ class  HouseCards {
 
         void printRunningCount(){cout << "running_count: " << _runningCount << endl;};
 
+// added overload class for unique pointers
+        // void dealIndexCardFromShoeToHand(int i, Hand &hand, bool isFaceUp){
+        //     vector<unique_ptr<Card>>::iterator it;
+        //     _runningCount += _shoe._handCards[i]->_runningCountValue;
+        //     _shoe._handCards[i]->_isFaceUp = isFaceUp;
+        //     hand.moveCardToHand(std::move(_shoe._handCards[i]));
+        //     it = _shoe._handCards.begin() + i;
+        //     _shoe._handCards.erase(it);
+        //     _shoe.updateHandSize();
+        //     _trueCountValue = ((float)_runningCount * 52.) / (float)_shoe._handSize;
+        // };
+
+
+
+
+
         vector<char> suits{ 'C', 'D', 'H', 'S'};
         vector<char> ranks{ '2', '3', '4', '5', '6', 
             '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
