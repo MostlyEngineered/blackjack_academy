@@ -121,12 +121,6 @@ TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
 }
 
 
-
-TEST(PlayerInstantiation, MakePlayer){
-    Player player = Player('H');
-}
-
-
 int main(int argc, char **argv){
 
     ::testing::InitGoogleTest(&argc, argv);
