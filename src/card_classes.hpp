@@ -102,7 +102,7 @@ class Hand{
     //member values
     // vector<char> actionsList = { 'H', 'S', 'P', 'D', 'R'}; //Possible actions are: Hit, Stay, Splittable, Doubledown, Surrender
     vector<char> possibleActions;
-    vector<unique_ptr<Card>> _handCards = {};
+    vector<unique_ptr<Card>> _handCards;
     int _handValue; //total value of one deck is 380
     int _handSize;
     bool _isBust = false; //initialize to false as blank hands are not bust
@@ -269,7 +269,7 @@ class Player {
             }
         }
 
-        vector<Hand> _playerHands = {}; //splits can make a player have multiple hands
+        vector<Hand> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
         int _playerNumber; //player number (this keeps track of player round resolution order)
         char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
@@ -346,10 +346,10 @@ class Game{
             //instantiate all players and add them to the appropriate seats
             for (int p=0;p<_numPlayers;p++){
                 if (p < _numPlayers-1){
-                    _players.push_back(Player('H', p, _initialPlayerMoney));
+                    // _players.push_back(Player('H', p, _initialPlayerMoney));
                 } else {
                     //can shuffle players here prior to adding dealer
-                    _players.push_back(Player('D', p, _initialPlayerMoney));
+                    // _players.push_back(Player('D', p, _initialPlayerMoney));
                 }
             }
         };
@@ -367,7 +367,7 @@ class Game{
         long long int _initialCasinoInitialMoney;
 
         // GameRound _curRound;
-        vector<Player> _players = {};
+        vector<Player> _players;
         int _numDecks;
 
         // HouseCards _houseCards;
