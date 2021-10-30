@@ -6,13 +6,22 @@
 #include <vector>
 #include "../src/card_classes.hpp"
 
-TEST(CardInstantiation, MakeDecks){
-    HouseCards test_cards = HouseCards(2);
+// TEST(CardInstantiation, MakeDecks){ // old test
+//     HouseCards test_cards = HouseCards(2);
+//     EXPECT_EQ(test_cards._curID, 104);
+//     HouseCards test_cards2 = HouseCards(5);
+//     EXPECT_EQ(test_cards2._curID, 260);
+//     Hand testhand;
+// }
+
+TEST(CardInstantiation, MakeDecks){ 
+    Hand test_cards = Hand(2);
     EXPECT_EQ(test_cards._curID, 104);
-    HouseCards test_cards2 = HouseCards(5);
+    Hand test_cards2 = Hand(5);
     EXPECT_EQ(test_cards2._curID, 260);
-    Hand testhand;
+
 }
+
 
 TEST(CardInstantiation, CheckCardValues){
     Card two = Card('H', '2', 0);
@@ -34,7 +43,8 @@ TEST(CardInstantiation, CheckCardValues){
 
 
 TEST(CardInstantiation, CheckHandValues){
-    HouseCards test_cards = HouseCards(1);
+    // HouseCards test_cards = HouseCards(1);
+    Hand test_cards = Hand(1);
     Hand hand1;
     Hand hand2;
 

@@ -20,6 +20,7 @@ using std::unique_ptr;
 // move constructor
 // move assignment operator
 
+
 class Card {
     public:
 
@@ -59,6 +60,20 @@ class Hand{
     private:
 
     public:
+
+    Hand(int nDecks){
+        
+        for (int n=0;n < nDecks;++n){ 
+            for (auto const& s : suits){
+                for (auto const& r : ranks){                 
+                    _handCards.emplace_back(std::make_unique< Card>(s, r, _curID));                 
+                    _curID += 1;
+                }
+            }
+        }
+        updateHandSize();        
+    };
+
 
     Hand(){
         // cout << "Hand created" << endl;
@@ -101,10 +116,17 @@ class Hand{
 
     //member values
     // vector<char> actionsList = { 'H', 'S', 'P', 'D', 'R'}; //Possible actions are: Hit, Stay, Splittable, Doubledown, Surrender
+
+
+    vector<char> suits{ 'C', 'D', 'H', 'S'};
+    vector<char> ranks{ '2', '3', '4', '5', '6', 
+        '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+
     vector<char> possibleActions;
     vector<unique_ptr<Card>> _handCards;
     int _handValue; //total value of one deck is 380
     int _handSize;
+    int _curID = 0;
     bool _isBust = false; //initialize to false as blank hands are not bust
     bool _isSplittable = false; //initialize to false as blank hands are not splittable
     bool _isDoubleDownable = false; //initialize to false as blank hands are not able to double down
@@ -134,7 +156,7 @@ class  HouseCards {
         //     }
         //     _shoe.updateHandSize();        
         // };
-
+        HouseCards(int nDecks){};
 
 
         void discardCard(unique_ptr<Card> card){
@@ -179,9 +201,9 @@ class  HouseCards {
 
         void printRunningCount(){cout << "running_count: " << _runningCount << endl;};
 
-        vector<char> suits{ 'C', 'D', 'H', 'S'};
-        vector<char> ranks{ '2', '3', '4', '5', '6', 
-            '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+        // vector<char> suits{ 'C', 'D', 'H', 'S'};
+        // vector<char> ranks{ '2', '3', '4', '5', '6', 
+        //     '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
         long _curID=0;
         Hand _shoe;
         Hand _discardPile;
