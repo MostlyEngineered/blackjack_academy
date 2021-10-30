@@ -15,9 +15,9 @@
 // }
 
 TEST(CardInstantiation, MakeDecks){ 
-    Hand test_cards = Hand(2);
+    Shoe test_cards = Shoe(2);
     EXPECT_EQ(test_cards._curID, 104);
-    Hand test_cards2 = Hand(5);
+    Shoe test_cards2 = Shoe(5);
     EXPECT_EQ(test_cards2._curID, 260);
 
 }
@@ -44,7 +44,7 @@ TEST(CardInstantiation, CheckCardValues){
 
 TEST(CardInstantiation, CheckHandValues){
     // HouseCards test_cards = HouseCards(1);
-    Hand test_cards = Hand(1);
+    Shoe test_cards = Shoe(1);
     Hand hand1;
     Hand hand2;
 
@@ -73,7 +73,7 @@ TEST(CardInstantiation, CheckHandValues){
 }
 
 TEST(CardInstantiation, DealAllRandomCards){
-    Hand test_cards = Hand(1);
+    Shoe test_cards = Shoe(1);
     Hand hand;
 
     for (int i=0;i<52;i++){
@@ -85,51 +85,51 @@ TEST(CardInstantiation, DealAllRandomCards){
 
 }
 
-// TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
-//     HouseCards test_cards = HouseCards(1);
-//     Hand hand1;
-//     Hand hand2;
+TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
+    Shoe test_cards = Shoe(1);
+    Hand hand1;
+    Hand hand2;
 
-//     // deal hand 1
-//     test_cards.dealIndexCardFromShoeToHand(1, hand1); // 3C
-//     EXPECT_EQ(hand1._isSplittable, false);
-//     EXPECT_EQ(hand1._isDoubleDownable, false);
-//     EXPECT_EQ(test_cards._runningCount, 1);
-//     EXPECT_NEAR(test_cards._trueCountValue, 1.01960784314, .001);
+    // deal hand 1
+    test_cards.dealIndexCardFromHandToHand(1, hand1, true); // 3C
+    EXPECT_EQ(hand1._isSplittable, false);
+    EXPECT_EQ(hand1._isDoubleDownable, false);
+    // EXPECT_EQ(test_cards._runningCount, 1);
+    // EXPECT_NEAR(test_cards._trueCountValue, 1.01960784314, .001);
     
-//     test_cards.dealIndexCardFromShoeToHand(13, hand1); // 3D
-//     EXPECT_EQ(hand1._isSplittable, true);
-//     EXPECT_EQ(hand1._isDoubleDownable, true);
-//     EXPECT_EQ(test_cards._runningCount, 2);    
-//     EXPECT_NEAR(test_cards._trueCountValue, 2.08, .001);
+    test_cards.dealIndexCardFromHandToHand(13, hand1, true); // 3D
+    EXPECT_EQ(hand1._isSplittable, true);
+    EXPECT_EQ(hand1._isDoubleDownable, true);
+    // EXPECT_EQ(test_cards._runningCount, 2);    
+    // EXPECT_NEAR(test_cards._trueCountValue, 2.08, .001);
  
 
-//     test_cards.dealIndexCardFromShoeToHand(15, hand1); // 6D
-//     EXPECT_EQ(hand1._isSplittable, false);
-//     EXPECT_EQ(hand1._isDoubleDownable, false);
-//     EXPECT_EQ(test_cards._runningCount, 3);
-//     EXPECT_NEAR(test_cards._trueCountValue, 3.18367346939, .001);
+    test_cards.dealIndexCardFromHandToHand(15, hand1, true); // 6D
+    EXPECT_EQ(hand1._isSplittable, false);
+    EXPECT_EQ(hand1._isDoubleDownable, false);
+    // EXPECT_EQ(test_cards._runningCount, 3);
+    // EXPECT_NEAR(test_cards._trueCountValue, 3.18367346939, .001);
     
-//     // deal hand 2
-//     test_cards.dealIndexCardFromShoeToHand(1, hand2); // 4C
-//     EXPECT_EQ(hand2._isSplittable, false);
-//     EXPECT_EQ(hand2._isDoubleDownable, false);
-//     EXPECT_EQ(test_cards._runningCount, 4);
-//     EXPECT_NEAR(test_cards._trueCountValue, 4.33333333333, .001);
+    // deal hand 2
+    test_cards.dealIndexCardFromHandToHand(1, hand2, true); // 4C
+    EXPECT_EQ(hand2._isSplittable, false);
+    EXPECT_EQ(hand2._isDoubleDownable, false);
+    // EXPECT_EQ(test_cards._runningCount, 4);
+    // EXPECT_NEAR(test_cards._trueCountValue, 4.33333333333, .001);
     
-//     test_cards.dealIndexCardFromShoeToHand(40, hand2); // 7S
-//     EXPECT_EQ(hand2._isSplittable, false);
-//     EXPECT_EQ(hand2._isDoubleDownable, true);
-//     EXPECT_EQ(test_cards._runningCount, 4);
-//     EXPECT_NEAR(test_cards._trueCountValue, 4.42553191489, .001);
+    test_cards.dealIndexCardFromHandToHand(40, hand2, true); // 7S
+    EXPECT_EQ(hand2._isSplittable, false);
+    EXPECT_EQ(hand2._isDoubleDownable, true);
+    // EXPECT_EQ(test_cards._runningCount, 4);
+    // EXPECT_NEAR(test_cards._trueCountValue, 4.42553191489, .001);
     
-//     test_cards.dealIndexCardFromShoeToHand(43, hand2); // JS
-//     EXPECT_EQ(hand2._isSplittable, false);
-//     EXPECT_EQ(hand2._isDoubleDownable, false);
-//     EXPECT_EQ(test_cards._runningCount, 3);
-//     EXPECT_NEAR(test_cards._trueCountValue, 3.39130434783, .001);
+    test_cards.dealIndexCardFromHandToHand(43, hand2, true); // JS
+    EXPECT_EQ(hand2._isSplittable, false);
+    EXPECT_EQ(hand2._isDoubleDownable, false);
+    // EXPECT_EQ(test_cards._runningCount, 3);
+    // EXPECT_NEAR(test_cards._trueCountValue, 3.39130434783, .001);
     
-// }
+}
 
 
 int main(int argc, char **argv){

@@ -24,6 +24,9 @@ using std::unique_ptr;
 class Card {
     public:
 
+        // Card(const Card&) = delete;
+        // Card(Card&&) = default;
+
         Card(char suit, char cRank, double cardID){
             // cout << "card created" << endl;
             _cardID = cardID;
@@ -60,29 +63,19 @@ class Hand{
     private:
 
     public:
+    Hand(){};
+    Hand(const Hand&) = delete;
+    Hand(Hand&&) = default;
 
-    Hand(int nDecks){
-        
-        for (int n=0;n < nDecks;++n){ 
-            for (auto const& s : suits){
-                for (auto const& r : ranks){                 
-                    _handCards.emplace_back(std::make_unique< Card>(s, r, _curID));                 
-                    _curID += 1;
-                }
-            }
-        }
-        updateHandSize();
-        cout << "Hand created" << endl;        
-    };
+    // Hand(){
+    //     cout << "Hand created" << endl;
+    //     };
+
+    // ~Hand(){
+    //     cout << "Hand destroyed" << endl;
+    //     };
 
 
-    Hand(){
-        cout << "Hand created" << endl;
-        };
-
-    ~Hand(){
-        cout << "Hand destroyed" << endl;
-        };
 
     void printHand();
     void calculateHandValue();
@@ -145,7 +138,7 @@ class Hand{
         '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
 
     vector<char> possibleActions;
-    vector<unique_ptr<Card>> _handCards;
+    vector<unique_ptr<Card>> _handCards = {};
     int _handValue; //total value of one deck is 380
     int _handSize;
     int _curID = 0;
@@ -157,6 +150,31 @@ class Hand{
     bool _isSurrenderable = false;
     bool _isFinished = false; // only changes to true when a stop condition is reached (Stay, Doubledown, Bust, Surrender)
     
+
+};
+
+
+class Shoe : public Hand {
+    private:
+
+    public:
+
+    Shoe(int nDecks){
+        
+        
+        for (int n=0;n < nDecks;++n){ 
+            for (auto const& s : suits){
+                for (auto const& r : ranks){                 
+                    _handCards.emplace_back(std::make_unique<Card>(s, r, _curID));             
+                    // _handCards.push_back(unique_ptr<Card>(s, r, _curID)));                 
+                    _curID += 1;
+                }
+            }
+        }
+        updateHandSize();
+        cout << "Shoe created" << endl;        
+    };
+    ~Shoe(){cout << "Shoe destroyed" << endl;};
 
 };
 
@@ -194,7 +212,7 @@ class Player {
     private:
 
     public:
-        Player(char playerType, int playerNumber, long long int playerMoney){
+        Player(char playerType, int playerNumber, long long int playerMoney) {
             _playerType = playerType;
             _playerNumber = playerNumber;
 
@@ -222,6 +240,24 @@ class Player {
 
         ~Player(){};
 
+        void printPlayerData(){
+            string playerTag;
+            if (_isDealer){
+                playerTag = " (D)";
+            } else if (_isHuman) {
+                playerTag = " (H)";
+            } else {
+                playerTag = "";
+            }
+
+            cout << "Player " << _playerNumber << ":" << playerTag << endl;
+            cout << "Money: " << _playerMoney << endl;
+            // for (auto hand : _playerHands){
+            // for (int h=0;h<_playerHands.size();h++ ){
+            //     cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
+            //     _playerHands[h].printHand();
+            // }
+        }
 
         // void makePlayerNewHand(){ 
         //     Hand hand;
@@ -252,6 +288,7 @@ class Player {
         //     }
         // }
 
+        // vector<unique_ptr<Hand>> _playerHands; //splits can make a player have multiple hands
         vector<Hand> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
         int _playerNumber; //player number (this keeps track of player round resolution order)
@@ -261,51 +298,6 @@ class Player {
         bool _isFinished = false; //player is finished when all his current round hands are finished, when hands are cleaned up this should be reset back to false
 
 };
-
-
-
-
-
-// class Players {
-
-//     private:
-
-//     public:
-
-//         Players(int numPlayers, long long int initialPlayerMoney){
-
-//             //instantiate all players and add them to the appropriate seats
-//             for (int p=0;p<numPlayers;p++){
-//                 if (p < numPlayers-1){
-//                     // _players.push_back(Player('H', p, initialPlayerMoney));
-//                 } else {
-//                     //can shuffle players here prior to adding dealer
-//                     // _players.push_back(Player('D', p, initialPlayerMoney));
-//                 }
-//             }
-        
-
-//         };
-
-//         vector<Player> _players;
-
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -329,6 +321,7 @@ class Game{
             _numComputerPlayers = 0; //this is 0 or more
             _numGamblers = _numHumanPlayers + _numComputerPlayers; //human players + computer players (is _numPlayers - 1)
             // _numPlayers = _numGamblers + 1; //human players + computer players + dealer
+            seatPlayers();
         };
         // One constructor should be numHumanPlayers, numComputerPlayers
 
@@ -342,18 +335,33 @@ class Game{
         void playRound(){
 
             // dealInitialCards();
-            // printRoundStatus();
 
+            printRoundStatus();
+
+
+        };
+
+        void printRoundStatus(){
+            //print all information relevant to round
+
+            cout << "Round number: " << _roundNum << endl;
+            for (auto player : _players){
+                player.printPlayerData();
+            }
 
         };
 
         void seatPlayers(){
             for (int p=0;p<_numPlayers;p++){
                 if (p < _numPlayers-1){
+                    // cout << "add H Player" << endl;
                     // _players.push_back(Player('H', p, _initialPlayerMoney));
+                    // _players.push_back(std::move(Player('H', p, _initialPlayerMoney)));
                 } else {
                     //can shuffle players here prior to adding dealer
-                    // _players.push_back(Player('D', p, _initialCasinoInitialMoney));
+                    // cout << "add D Player" << endl;
+                    // _players.push_back(Player('D', p, _initialPlayerMoney));
+                    // _players.push_back(std::move(Player('D', p, _initialCasinoInitialMoney)));
                 }
             }
         };
