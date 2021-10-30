@@ -120,20 +120,22 @@ class  HouseCards {
     private:
 
     public:
-        HouseCards(int nDecks){
-            for (int n=0;n < nDecks;++n){ 
-                for (auto const& s : suits){
-                    for (auto const& r : ranks){                 
-                        unique_ptr<Card> card = std::make_unique< Card>(s, r, _curID);                 
-                        // card->printCard();
-                        dealCardToShoe(std::move(card));
-                        _curID += 1;
+        // HouseCards(int nDecks){
+        //     for (int n=0;n < nDecks;++n){ 
+        //         for (auto const& s : suits){
+        //             for (auto const& r : ranks){                 
+        //                 unique_ptr<Card> card = std::make_unique< Card>(s, r, _curID);                 
+        //                 // card->printCard();
+        //                 dealCardToShoe(std::move(card));
+        //                 _curID += 1;
 
-                    }
-                }
-            }
-            _shoe.updateHandSize();        
-        };
+        //             }
+        //         }
+        //     }
+        //     _shoe.updateHandSize();        
+        // };
+
+
 
         void discardCard(unique_ptr<Card> card){
             _discardPile.moveCardToHand(std::move(card));
