@@ -71,16 +71,17 @@ class Hand{
                 }
             }
         }
-        updateHandSize();        
+        updateHandSize();
+        cout << "Hand created" << endl;        
     };
 
 
     Hand(){
-        // cout << "Hand created" << endl;
+        cout << "Hand created" << endl;
         };
 
     ~Hand(){
-        // cout << "Hand destroyed" << endl;
+        cout << "Hand destroyed" << endl;
         };
 
     void printHand();
@@ -90,7 +91,34 @@ class Hand{
         updateHandSplittable();
         updatePossibleActions();
     };
-    void moveCardToHand(unique_ptr<Card> card);
+    // void moveCardToHand(unique_ptr<Card> card);
+    void moveCardToHand(unique_ptr<Card> card){
+        // _handCards.emplace_back(std::move(card));
+        _handCards.push_back(std::move(card));
+        calculateHandValue();
+        updateHandSize();
+    };
+
+    void dealIndexCardFromHandToHand(int i, Hand &toHand, bool isFaceUp){
+        vector<unique_ptr<Card>>::iterator it;
+        // _runningCount += _shoe._handCards[i]->_runningCountValue;
+        this->_handCards[i]->_isFaceUp = isFaceUp;
+        toHand.moveCardToHand(std::move(this->_handCards[i]));
+        it = this->_handCards.begin() + i;
+        this->_handCards.erase(it);
+        this->updateHandSize();
+        // _trueCountValue = ((float)_runningCount * 52.) / (float)_shoe._handSize;
+    };
+
+
+    void dealRandomCardFromHandToHand(Hand &toHand, bool isFaceUp){
+        int RandIndex = rand() % this->_handCards.size();
+        dealIndexCardFromHandToHand(RandIndex, toHand, isFaceUp);
+    };
+
+
+    //member values
+    // vector<char> actionsList = { 'H', 'S', 'P', 'D', 'R'}; //Possible actions are: Hit, Stay, Splittable, Doubledown, Surrender
     void updateHandSplittable();
     
     void updatePossibleActions(){
@@ -110,13 +138,7 @@ class Hand{
                 possibleActions.emplace_back('R');
             }        
         }
-
-
     }
-
-    //member values
-    // vector<char> actionsList = { 'H', 'S', 'P', 'D', 'R'}; //Possible actions are: Hit, Stay, Splittable, Doubledown, Surrender
-
 
     vector<char> suits{ 'C', 'D', 'H', 'S'};
     vector<char> ranks{ '2', '3', '4', '5', '6', 
@@ -142,20 +164,7 @@ class  HouseCards {
     private:
 
     public:
-        // HouseCards(int nDecks){
-        //     for (int n=0;n < nDecks;++n){ 
-        //         for (auto const& s : suits){
-        //             for (auto const& r : ranks){                 
-        //                 unique_ptr<Card> card = std::make_unique< Card>(s, r, _curID);                 
-        //                 // card->printCard();
-        //                 dealCardToShoe(std::move(card));
-        //                 _curID += 1;
 
-        //             }
-        //         }
-        //     }
-        //     _shoe.updateHandSize();        
-        // };
         HouseCards(int nDecks){};
 
 
@@ -167,43 +176,10 @@ class  HouseCards {
             _shoe.moveCardToHand(std::move(card));
         };
 
-        void dealIndexCardFromShoeToHand(int i, Hand &hand){
-            dealIndexCardFromShoeToHand(i, hand, true);
-        };
-
-        void dealIndexCardFromShoeToHand(int i, Hand &hand, bool isFaceUp){
-            vector<unique_ptr<Card>>::iterator it;
-            _runningCount += _shoe._handCards[i]->_runningCountValue;
-            _shoe._handCards[i]->_isFaceUp = isFaceUp;
-            hand.moveCardToHand(std::move(_shoe._handCards[i]));
-            it = _shoe._handCards.begin() + i;
-            _shoe._handCards.erase(it);
-            _shoe.updateHandSize();
-            _trueCountValue = ((float)_runningCount * 52.) / (float)_shoe._handSize;
-        };
-
-
-        void dealRandomCardFromShoeToHand(Hand &hand, bool isFaceUp){
-            // _shoe.updateHandSize(); // this is done after each modifying action
-            int RandIndex = rand() % _shoe._handSize;
-            
-            dealIndexCardFromShoeToHand(RandIndex, hand);
-            _shoe.updateHandSize();
-            hand.updateHandSize();
-            cout << "print hand" << endl;
-            hand.printHand();
-        };
-
-        void dealRandomCardFromShoeToHand(Hand &hand){
-            dealRandomCardFromShoeToHand(hand, true);
-
-        };
 
         void printRunningCount(){cout << "running_count: " << _runningCount << endl;};
 
-        // vector<char> suits{ 'C', 'D', 'H', 'S'};
-        // vector<char> ranks{ '2', '3', '4', '5', '6', 
-        //     '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+
         long _curID=0;
         Hand _shoe;
         Hand _discardPile;
@@ -290,30 +266,30 @@ class Player {
 
 
 
-class Players {
+// class Players {
 
-    private:
+//     private:
 
-    public:
+//     public:
 
-        Players(int numPlayers, long long int initialPlayerMoney){
+//         Players(int numPlayers, long long int initialPlayerMoney){
 
-            //instantiate all players and add them to the appropriate seats
-            for (int p=0;p<numPlayers;p++){
-                if (p < numPlayers-1){
-                    // _players.push_back(Player('H', p, initialPlayerMoney));
-                } else {
-                    //can shuffle players here prior to adding dealer
-                    // _players.push_back(Player('D', p, initialPlayerMoney));
-                }
-            }
+//             //instantiate all players and add them to the appropriate seats
+//             for (int p=0;p<numPlayers;p++){
+//                 if (p < numPlayers-1){
+//                     // _players.push_back(Player('H', p, initialPlayerMoney));
+//                 } else {
+//                     //can shuffle players here prior to adding dealer
+//                     // _players.push_back(Player('D', p, initialPlayerMoney));
+//                 }
+//             }
         
 
-        };
+//         };
 
-        vector<Player> _players;
+//         vector<Player> _players;
 
-};
+// };
 
 
 
@@ -371,9 +347,16 @@ class Game{
 
         };
 
-
-
-
+        void seatPlayers(){
+            for (int p=0;p<_numPlayers;p++){
+                if (p < _numPlayers-1){
+                    // _players.push_back(Player('H', p, _initialPlayerMoney));
+                } else {
+                    //can shuffle players here prior to adding dealer
+                    // _players.push_back(Player('D', p, _initialCasinoInitialMoney));
+                }
+            }
+        };
 
 
         int _numHumanPlayers; //this is at least 1

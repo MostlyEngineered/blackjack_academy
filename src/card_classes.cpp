@@ -80,12 +80,12 @@ void Hand::calculateHandValue(){
 };
 
 
-void Hand::moveCardToHand(unique_ptr<Card> card){
-    // _handCards.emplace_back(std::move(card));
-    _handCards.push_back(std::move(card));
-    calculateHandValue();
-    updateHandSize();
-};
+// void Hand::moveCardToHand(unique_ptr<Card> card){
+//     // _handCards.emplace_back(std::move(card));
+//     _handCards.push_back(std::move(card));
+//     calculateHandValue();
+//     updateHandSize();
+// };
 
 void Hand::printHand(){
     for (auto &c : _handCards){
