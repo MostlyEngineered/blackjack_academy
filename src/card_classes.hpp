@@ -190,23 +190,6 @@ class  HouseCards {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Player {
     private:
 
@@ -250,24 +233,24 @@ class Player {
         //     houseCards.dealRandomCardFromShoeToHand(_playerHands.back(), isFaceUp);
         // };
 
-        void printPlayerData(){
-            string playerTag;
-            if (_isDealer){
-                playerTag = " (D)";
-            } else if (_isHuman) {
-                playerTag = " (H)";
-            } else {
-                playerTag = "";
-            }
+        // void printPlayerData(){
+        //     string playerTag;
+        //     if (_isDealer){
+        //         playerTag = " (D)";
+        //     } else if (_isHuman) {
+        //         playerTag = " (H)";
+        //     } else {
+        //         playerTag = "";
+        //     }
 
-            cout << "Player " << _playerNumber << ":" << playerTag << endl;
-            cout << "Money: " << _playerMoney << endl;
-            // for (auto hand : _playerHands){
-            for (int h=0;h<_playerHands.size();h++ ){
-                cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
-                _playerHands[h].printHand();
-            }
-        }
+        //     cout << "Player " << _playerNumber << ":" << playerTag << endl;
+        //     cout << "Money: " << _playerMoney << endl;
+        //     // for (auto hand : _playerHands){
+        //     for (int h=0;h<_playerHands.size();h++ ){
+        //         cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
+        //         _playerHands[h].printHand();
+        //     }
+        // }
 
         vector<Hand> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
@@ -283,7 +266,30 @@ class Player {
 
 
 
+class Players {
 
+    private:
+
+    public:
+
+        Players(int numPlayers, long long int initialPlayerMoney){
+
+            //instantiate all players and add them to the appropriate seats
+            for (int p=0;p<numPlayers;p++){
+                if (p < numPlayers-1){
+                    // _players.push_back(Player('H', p, initialPlayerMoney));
+                } else {
+                    //can shuffle players here prior to adding dealer
+                    // _players.push_back(Player('D', p, initialPlayerMoney));
+                }
+            }
+        
+
+        };
+
+        vector<Player> _players;
+
+};
 
 
 
@@ -342,17 +348,7 @@ class Game{
         };
 
 
-        void seatPlayers(){
-            //instantiate all players and add them to the appropriate seats
-            for (int p=0;p<_numPlayers;p++){
-                if (p < _numPlayers-1){
-                    // _players.push_back(Player('H', p, _initialPlayerMoney));
-                } else {
-                    //can shuffle players here prior to adding dealer
-                    // _players.push_back(Player('D', p, _initialPlayerMoney));
-                }
-            }
-        };
+
 
 
 
