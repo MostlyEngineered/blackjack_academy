@@ -67,16 +67,6 @@ class Hand{
     Hand(const Hand&) = delete;
     Hand(Hand&&) = default;
 
-    // Hand(){
-    //     cout << "Hand created" << endl;
-    //     };
-
-    // ~Hand(){
-    //     cout << "Hand destroyed" << endl;
-    //     };
-
-
-
     void printHand();
     void calculateHandValue();
     void updateHandSize(){
@@ -252,44 +242,24 @@ class Player {
 
             cout << "Player " << _playerNumber << ":" << playerTag << endl;
             cout << "Money: " << _playerMoney << endl;
-            // for (auto hand : _playerHands){
-            // for (int h=0;h<_playerHands.size();h++ ){
-            //     cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
-            //     _playerHands[h].printHand();
-            // }
-        }
+            for (auto hand : _playerHands){
+                for (int h=0;h<_playerHands.size();h++ ){
+                    cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
+                    _playerHands[h]->printHand();
+                }
+            }
+        };
 
-        // void makePlayerNewHand(){ 
-        //     Hand hand;
-        //     _playerHands.emplace_back(hand);
-        // };
-
-        // void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
-        //     makePlayerNewHand();
-        //     houseCards.dealRandomCardFromShoeToHand(_playerHands.back(), isFaceUp);
-        // };
-
-        // void printPlayerData(){
-        //     string playerTag;
-        //     if (_isDealer){
-        //         playerTag = " (D)";
-        //     } else if (_isHuman) {
-        //         playerTag = " (H)";
-        //     } else {
-        //         playerTag = "";
-        //     }
-
-        //     cout << "Player " << _playerNumber << ":" << playerTag << endl;
-        //     cout << "Money: " << _playerMoney << endl;
-        //     // for (auto hand : _playerHands){
-        //     for (int h=0;h<_playerHands.size();h++ ){
-        //         cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
-        //         _playerHands[h].printHand();
-        //     }
-        // }
+        void makePlayerNewHand(){
+            Hand* hand;
+            // std::shared_ptr<Hand> hand;
+            // unique_ptr<Hand> hand;
+            _playerHands.push_back(hand);
+            // return hand;
+        };
 
         // vector<unique_ptr<Hand>> _playerHands; //splits can make a player have multiple hands
-        vector<Hand> _playerHands; //splits can make a player have multiple hands
+        vector<Hand*> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
         int _playerNumber; //player number (this keeps track of player round resolution order)
         char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
@@ -326,16 +296,9 @@ class Game{
         // One constructor should be numHumanPlayers, numComputerPlayers
 
 
-        // Game();
-
-        // ~Game();
-
-
-        //vector.insert(begin(), 1, val) //ref for adding dealer
         void playRound(){
 
             // dealInitialCards();
-
             printRoundStatus();
 
 
@@ -355,14 +318,40 @@ class Game{
             for (int p=0;p<_numPlayers;p++){
                 if (p < _numPlayers-1){
                     // cout << "add H Player" << endl;
-                    // _players.push_back(Player('H', p, _initialPlayerMoney));
+                    _players.push_back(Player('H', p, _initialPlayerMoney));
                     // _players.push_back(std::move(Player('H', p, _initialPlayerMoney)));
                 } else {
                     //can shuffle players here prior to adding dealer
                     // cout << "add D Player" << endl;
-                    // _players.push_back(Player('D', p, _initialPlayerMoney));
+                    _players.push_back(Player('D', p, _initialPlayerMoney));
                     // _players.push_back(std::move(Player('D', p, _initialCasinoInitialMoney)));
                 }
+            }
+        };
+
+
+        void dealInitialCards(){
+            // deal all players one card (face up, starting at player 1), dealer gets one card face down
+            // deal all players second card (face up, starting at player 1), dealer gets one card face up
+            for (auto player : _players){
+                //deal first card, face down to dealer, face up to players
+                if (player._isDealer==true){
+                    player.makePlayerNewHand();
+                    // shoe.
+
+                    // this->_houseCards->dealRandomCardFromShoeToHand(*(player._playerHands[0]));
+                    // player.dealCardToPlayerNewHand((this->_houseCards->_shoe), false);
+
+                } else{
+                    player.makePlayerNewHand();
+                    // player.dealCardToPlayerNewHand((this->_houseCards->_shoe), true);
+
+                }
+            }
+
+            for (auto player : _players){
+                //deal second card face up to all
+                // player.dealCardToPlayerNewHand(*(this->_houseCards), true);
             }
         };
 
@@ -378,6 +367,7 @@ class Game{
         long long int _initialCasinoInitialMoney;
 
         // GameRound _curRound;
+        Shoe shoe = Shoe(_numDecks);
         vector<Player> _players;
         int _numDecks;
 
