@@ -242,6 +242,7 @@ class Player {
 
             cout << "Player " << _playerNumber << ":" << playerTag << endl;
             cout << "Money: " << _playerMoney << endl;
+            cout << "Num Hands: " << _playerHands.size() << endl;
             for (auto hand : _playerHands){
                 for (int h=0;h<_playerHands.size();h++ ){
                     cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
@@ -298,7 +299,7 @@ class Game{
 
         void playRound(){
 
-            // dealInitialCards();
+            dealInitialCards();
             printRoundStatus();
 
 
