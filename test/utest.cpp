@@ -14,13 +14,13 @@
 //     Hand testhand;
 // }
 
-TEST(CardInstantiation, MakeDecks){ 
-    Shoe test_cards = Shoe(2);
-    EXPECT_EQ(test_cards._curID, 104);
-    Shoe test_cards2 = Shoe(5);
-    EXPECT_EQ(test_cards2._curID, 260);
+// TEST(CardInstantiation, MakeDecks){ 
+//     Shoe test_cards = Shoe(2);
+//     EXPECT_EQ(test_cards._curID, 104);
+//     Shoe test_cards2 = Shoe(5);
+//     EXPECT_EQ(test_cards2._curID, 260);
 
-}
+// }
 
 
 TEST(CardInstantiation, CheckCardValues){

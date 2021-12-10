@@ -289,7 +289,7 @@ class Player {
         // }
 
         // vector<unique_ptr<Hand>> _playerHands; //splits can make a player have multiple hands
-        vector<Hand> _playerHands; //splits can make a player have multiple hands
+        // vector<Hand> _playerHands; //splits can make a player have multiple hands
         long long int _playerMoney; //how much money the player has
         int _playerNumber; //player number (this keeps track of player round resolution order)
         char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
