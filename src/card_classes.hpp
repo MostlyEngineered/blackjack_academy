@@ -12,13 +12,24 @@ using std::weak_ptr;
 using std::unique_ptr;
 
 //Rule of 3
-// destructor
-// copy constructor
-// copy assignment operator
+// destructor ~ClassName()
+// copy constructor ClassName( const ClassName& )
+// copy assignment operator   MyClass& MyClass::operator=( const MyClass& obj )
 
 //Rule of 5
-// move constructor
-// move assignment operator
+// move constructor ClassName( ClassName&& obj ) 
+// move assignment operator ClassName& operator=(ClassName&& obj)
+
+// Reference Code
+// forward_list(forward_list&& other) :
+//     root_(std::move(other.root_)),
+//     leaf_(std::move(other.leaf_)),
+//     count_(other.count_),
+//     heap_(other.heap_)
+//     {
+//         // Do Nothing
+//     }
+    
 
 
 class Card {
@@ -41,6 +52,13 @@ class Card {
             // delete this;
         };
         
+
+        Card( const Card& ) ; // copy constructor 
+        // Card& Card::operator=( const Card& obj ) ;// copy assignment operator   
+        Card( Card&& obj ) ; // move constructor 
+        // Card& operator=(Card&& obj) ; // move assignment operator 
+
+
         void calculateHardValue();
         void calculateRunningCountValue();
         void printCard(){cout << _cardID << ": " << _cRank << _suit << ", HV: " << _hardValue << ", RC: " << _runningCountValue << endl;};
@@ -64,17 +82,27 @@ class Hand{
 
     public:
     Hand(){};
-    Hand(const Hand&) = delete;
-    Hand(Hand&&) = default;
+    // Hand(const Hand&) = delete; 
+    // Hand(const Hand&) = default; 
+    // Hand(Hand&&) = default;
 
     // Hand(){
     //     cout << "Hand created" << endl;
     //     };
 
-    // ~Hand(){
-    //     cout << "Hand destroyed" << endl;
-    //     };
+    //Destructor
+    ~Hand(){
+        cout << "Hand destroyed" << endl;
+        };
 
+    // move constructor 
+    Hand(Hand&& other) :
+        _handCards(std::move(other._handCards))
+        {};
+
+    // Hand( const Hand& ) {}; // copy constructor 
+    // Hand& Hand::operator=( const Hand& obj ) {};// copy assignment operator   
+    // Hand& operator=(Hand&& obj) {}; // move assignment operator 
 
 
     void printHand();
@@ -166,7 +194,6 @@ class Shoe : public Hand {
             for (auto const& s : suits){
                 for (auto const& r : ranks){                 
                     _handCards.emplace_back(std::make_unique<Card>(s, r, _curID));             
-                    // _handCards.push_back(unique_ptr<Card>(s, r, _curID)));                 
                     _curID += 1;
                 }
             }
@@ -207,7 +234,6 @@ class  HouseCards {
 };
 
 
-
 class Player {
     private:
 
@@ -241,17 +267,17 @@ class Player {
         ~Player(){};
 
         void printPlayerData(){
-            string playerTag;
-            if (_isDealer){
-                playerTag = " (D)";
-            } else if (_isHuman) {
-                playerTag = " (H)";
-            } else {
-                playerTag = "";
-            }
+            // string playerTag;
+            // if (_isDealer){
+            //     playerTag = " (D)";
+            // } else if (_isHuman) {
+            //     playerTag = " (H)";
+            // } else {
+            //     playerTag = "";
+            // }
 
-            cout << "Player " << _playerNumber << ":" << playerTag << endl;
-            cout << "Money: " << _playerMoney << endl;
+            // cout << "Player " << _playerNumber << ":" << playerTag << endl;
+            // cout << "Money: " << _playerMoney << endl;
             // for (auto hand : _playerHands){
             // for (int h=0;h<_playerHands.size();h++ ){
             //     cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
@@ -259,10 +285,17 @@ class Player {
             // }
         }
 
-        // void makePlayerNewHand(){ 
-        //     Hand hand;
-        //     _playerHands.emplace_back(hand);
-        // };
+        void makePlayerNewHand(){ 
+            // Hand hand;
+            Hand *hand;
+            // _playerHands.emplace_back(std::move(hand));
+            // unique_ptr<Hand> _hand_ptr;
+            // _playerHands.emplace_back(std::move(_hand_ptr));
+            // _playerHands.emplace_back(std::move(unique_ptr<Hand>(new Hand)));
+            _playerHands.emplace_back( hand);
+            // unique_ptr<Hand> _hand_ptr = std::make_unique<Hand>;
+            // _playerHands.emplace_back(std::make_unique<Hand>);
+        };
 
         // void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
         //     makePlayerNewHand();
@@ -288,8 +321,11 @@ class Player {
         //     }
         // }
 
-        // vector<unique_ptr<Hand>> _playerHands; //splits can make a player have multiple hands
-        // vector<Hand> _playerHands; //splits can make a player have multiple hands
+        // vector<unique_ptr< Hand >> _playerHands; 
+        // vector<unique_ptr< int >> _playerHands; //nope
+        // unique_ptr< int > _playerHands; 
+        vector<Hand> _playerHands; //splits can make a player have multiple hands
+        // PlayerHands _playerHands;
         long long int _playerMoney; //how much money the player has
         int _playerNumber; //player number (this keeps track of player round resolution order)
         char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
@@ -298,9 +334,6 @@ class Player {
         bool _isFinished = false; //player is finished when all his current round hands are finished, when hands are cleaned up this should be reset back to false
 
 };
-
-
-
 
 
 class Game{
@@ -321,7 +354,7 @@ class Game{
             _numComputerPlayers = 0; //this is 0 or more
             _numGamblers = _numHumanPlayers + _numComputerPlayers; //human players + computer players (is _numPlayers - 1)
             // _numPlayers = _numGamblers + 1; //human players + computer players + dealer
-            seatPlayers();
+            // seatPlayers();
         };
         // One constructor should be numHumanPlayers, numComputerPlayers
 
@@ -345,9 +378,9 @@ class Game{
             //print all information relevant to round
 
             cout << "Round number: " << _roundNum << endl;
-            for (auto player : _players){
-                player.printPlayerData();
-            }
+            // for (auto player : _players){
+            //     player.printPlayerData();
+            // }
 
         };
 
@@ -378,7 +411,7 @@ class Game{
         long long int _initialCasinoInitialMoney;
 
         // GameRound _curRound;
-        vector<Player> _players;
+        // vector<Player> _players;
         int _numDecks;
 
         // HouseCards _houseCards;
