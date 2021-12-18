@@ -131,11 +131,18 @@ TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
     
 }
 
-TEST(CardInstantiation, MakePlayer){
+TEST(CardInstantiation, MakePlayerHand){
     Player test_player = Player('H', 0, 50000);
-    Shoe test_cards = Shoe(1);
+    // Shoe test_cards = Shoe(1);
+    // HouseCards test_house(1);
 
-    test_player.makePlayerNewHand();
+    // test_player.makePlayerNewHand();
+
+    // test_house.dealToHand(&(test_player._playerHands[0]));
+    // test_house.dealToHand(test_player._playerHands[0]);
+    // test_house._shoe.dealRandomCardFromHandToHand(test_player._playerHands[0], true);
+    // test_cards.dealRandomCardFromHandToHand(test_player._playerHands[0], true);
+    // test_player.printPlayerData();
 
 
 }
