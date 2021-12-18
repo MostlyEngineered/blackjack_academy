@@ -61,7 +61,12 @@ class Card {
 
         void calculateHardValue();
         void calculateRunningCountValue();
-        void printCard(){cout << _cardID << ": " << _cRank << _suit << ", HV: " << _hardValue << ", RC: " << _runningCountValue << endl;};
+        void printCard()
+            {
+                cout << _cardID << ": " << _cRank << _suit << ", HV: " 
+                    << _hardValue << ", RC: " << _runningCountValue 
+                    << ", faceup: " << _isFaceUp << endl;
+            };
 
         long _cardID;
         char _cRank;
@@ -133,6 +138,7 @@ class Hand{
 
 
     void dealRandomCardFromHandToHand(Hand &toHand, bool isFaceUp){
+        srand (time(NULL)); //randomize seed number
         int RandIndex = rand() % this->_handCards.size();
         dealIndexCardFromHandToHand(RandIndex, toHand, isFaceUp);
     };
@@ -266,35 +272,11 @@ class Player {
 
         ~Player(){};
 
-        void printPlayerData(){
-            // string playerTag;
-            // if (_isDealer){
-            //     playerTag = " (D)";
-            // } else if (_isHuman) {
-            //     playerTag = " (H)";
-            // } else {
-            //     playerTag = "";
-            // }
-
-            // cout << "Player " << _playerNumber << ":" << playerTag << endl;
-            // cout << "Money: " << _playerMoney << endl;
-            // for (auto hand : _playerHands){
-            // for (int h=0;h<_playerHands.size();h++ ){
-            //     cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
-            //     _playerHands[h].printHand();
-            // }
-        }
-
         void makePlayerNewHand(){ 
             Hand hand;
 
             _playerHands.emplace_back(std::move(hand));
-            // unique_ptr<Hand> _hand_ptr;
-            // _playerHands.emplace_back(std::move(_hand_ptr));
-            // _playerHands.emplace_back(std::move(unique_ptr<Hand>(new Hand)));
 
-            // unique_ptr<Hand> _hand_ptr = std::make_unique<Hand>;
-            // _playerHands.emplace_back(std::make_unique<Hand>);
         };
 
         // void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
@@ -302,24 +284,24 @@ class Player {
         //     houseCards.dealRandomCardFromShoeToHand(_playerHands.back(), isFaceUp);
         // };
 
-        // void printPlayerData(){
-        //     string playerTag;
-        //     if (_isDealer){
-        //         playerTag = " (D)";
-        //     } else if (_isHuman) {
-        //         playerTag = " (H)";
-        //     } else {
-        //         playerTag = "";
-        //     }
+        void printPlayerData(){
+            string playerTag;
+            if (_isDealer){
+                playerTag = " (D)";
+            } else if (_isHuman) {
+                playerTag = " (H)";
+            } else {
+                playerTag = "";
+            }
 
-        //     cout << "Player " << _playerNumber << ":" << playerTag << endl;
-        //     cout << "Money: " << _playerMoney << endl;
-        //     // for (auto hand : _playerHands){
-        //     for (int h=0;h<_playerHands.size();h++ ){
-        //         cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
-        //         _playerHands[h].printHand();
-        //     }
-        // }
+            cout << "Player " << _playerNumber << ":" << playerTag << endl;
+            cout << "Money: " << _playerMoney << endl;
+            // for (auto hand : _playerHands){
+            for (int h=0;h<_playerHands.size();h++ ){
+                cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
+                _playerHands[h].printHand();
+            }
+        }
 
         // vector<unique_ptr< Hand >> _playerHands; 
         // vector<unique_ptr< int >> _playerHands; //nope

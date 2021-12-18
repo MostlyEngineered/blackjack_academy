@@ -138,11 +138,10 @@ TEST(CardInstantiation, MakePlayerHand){
 
     test_player.makePlayerNewHand();
 
-    // test_house.dealToHand(&(test_player._playerHands[0]));
-    // test_house.dealToHand(test_player._playerHands[0]);
-    // test_house._shoe.dealRandomCardFromHandToHand(test_player._playerHands[0], true);
-    // test_cards.dealRandomCardFromHandToHand(test_player._playerHands[0], true);
-    // test_player.printPlayerData();
+    test_cards.dealRandomCardFromHandToHand(test_player._playerHands[0], true);
+    test_cards.dealRandomCardFromHandToHand(test_player._playerHands[0], true);
+
+    test_player.printPlayerData();
 
 
 }
