@@ -133,7 +133,7 @@ TEST(CardInstantiation, CheckSplittableAndDoubleDownable){
 
 TEST(CardInstantiation, MakePlayerHand){
     Player test_player = Player('H', 0, 50000);
-    // Shoe test_cards = Shoe(1);
+    Shoe test_cards = Shoe(1);
     // HouseCards test_house(1);
 
     test_player.makePlayerNewHand();
