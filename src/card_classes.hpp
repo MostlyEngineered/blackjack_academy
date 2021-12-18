@@ -287,12 +287,12 @@ class Player {
 
         void makePlayerNewHand(){ 
             // Hand hand;
-            Hand *hand;
+
             // _playerHands.emplace_back(std::move(hand));
             // unique_ptr<Hand> _hand_ptr;
             // _playerHands.emplace_back(std::move(_hand_ptr));
             // _playerHands.emplace_back(std::move(unique_ptr<Hand>(new Hand)));
-            _playerHands.emplace_back( hand);
+
             // unique_ptr<Hand> _hand_ptr = std::make_unique<Hand>;
             // _playerHands.emplace_back(std::make_unique<Hand>);
         };
