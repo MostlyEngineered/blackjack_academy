@@ -143,6 +143,19 @@ TEST(CardInstantiation, MakePlayerHand){
 
     test_player.printPlayerData();
 
+}
+
+TEST(CardInstantiation, DealFromHouse){
+    Player test_player = Player('H', 0, 50000);
+    // Shoe test_cards = Shoe(1);
+    HouseCards test_house(1);
+
+    test_player.makePlayerNewHand();
+
+    test_house._shoe.dealRandomCardFromHandToHand(test_player._playerHands[0], true);
+    test_house._shoe.dealRandomCardFromHandToHand(test_player._playerHands[0], true);
+
+    test_player.printPlayerData();
 
 }
 

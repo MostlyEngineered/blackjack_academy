@@ -216,7 +216,10 @@ class  HouseCards {
 
     public:
 
-        HouseCards(int nDecks){};
+        HouseCards(int nDecks) : _shoe(Shoe(nDecks))
+        {
+
+        };
 
 
         void discardCard(unique_ptr<Card> card){
@@ -365,14 +368,14 @@ class Game{
         void seatPlayers(){
             for (int p=0;p<_numPlayers;p++){
                 if (p < _numPlayers-1){
-                    cout << "add H Player" << endl;
+                    // cout << "add H Player" << endl;
                     // _players.push_back(Player('H', p, _initialPlayerMoney));
-                    _players.push_back(std::move(Player('H', p, _initialPlayerMoney)));
+                    // _players.push_back(std::move(Player('H', p, _initialPlayerMoney)));
                 } else {
                     //can shuffle players here prior to adding dealer
-                    cout << "add D Player" << endl;
+                    // cout << "add D Player" << endl;
                     // _players.push_back(Player('D', p, _initialPlayerMoney));
-                    _players.push_back(std::move(Player('D', p, _initialCasinoInitialMoney)));
+                    // _players.push_back(std::move(Player('D', p, _initialCasinoInitialMoney)));
                 }
             }
         };
