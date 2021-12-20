@@ -159,13 +159,21 @@ TEST(CardInstantiation, DealFromHouse){
 
 }
 
-TEST(CardInstantiation, TestGameInitiation){
-    Game test_game = Game(3, 50000, 1);
-    // players, initial money, decks
+// TEST(CardInstantiation, TestGameInitiation){
+//     Game test_game = Game(3, 50000, 1);
+//     // players, initial money, decks
 
-    test_game.playRound();
+//     test_game.playRound();
 
-}
+// }
+
+// TEST(CardInstantiation, TestHumanInitiation){
+//     Game test_game = Game(1, 50000, 1);
+//     // players, initial money, decks
+
+//     test_game.playRound();
+
+// }
 
 int main(int argc, char **argv){
 

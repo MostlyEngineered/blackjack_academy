@@ -24,6 +24,9 @@ Split (preconditions)- If the player is dealt two identical value cards (10, J, 
 Double down (preconditions)- This action is only allowed if the player's hand consists of two cards (splits can be doubled down on).  The player can bet more (up to their original amount) and recieves only one card (ie this action amounts to Bet, Hit, Stay)
 Surrender - Player loses half their bet after looking at their initial two cards.  There are two varieties.  Early Surrender, where the player quits before the dealer checks for blackjack.  Late surrender is quitting after the dealer checks for blackjack.
 
+# Win Loss Condition
+Players that get a higher score than the dealer without busting win their hand.  Lesser score than the dealer results in a loss.  A tie is called a push and can be a player loss, win, or the return of the bet money.
+
 ## Dealer play
 The dealer has a set algorithm they must use to play.  The dealer can only hit or stay.  The dealer must hit until they reach 17 or greater (ie if they have 16 or less).
 

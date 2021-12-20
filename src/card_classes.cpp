@@ -91,7 +91,8 @@ void Hand::printHand(){
     for (auto &c : _handCards){
         c->printCard();
     }
-    cout << "Hand values: " << this->_handValue << " DD:" << this->_isDoubleDownable << ", Sp:" << this->_isSplittable << ", Bu:" << this->_isBust;
+    cout << "Hand values: " << this->_handValue << " DD:" << this->_isDoubleDownable << 
+    ",Sp:" << this->_isSplittable << ", Bu:" << this->_isBust << ", Fi:" << this->_isFinished;
 };
 
 void Hand::updateHandSplittable(){ 
