@@ -146,7 +146,6 @@ class Hand{
         // _trueCountValue = ((float)_runningCount * 52.) / (float)_shoe._handSize;
     };
 
-
     void dealRandomCardFromHandToHand(Hand &toHand, bool isFaceUp){
         srand (time(NULL)); //randomize seed number
         int RandIndex = rand() % this->_handCards.size();
@@ -235,6 +234,7 @@ class  HouseCards {
 
         void discardCard(unique_ptr<Card> card){
             _discardPile.moveCardToHand(std::move(card));
+            card = nullptr;
         };
 
         void dealCardToShoe(unique_ptr<Card> card){
@@ -443,9 +443,34 @@ class Game{
 
             calculateTurnResults();
 
+            discardCards();
 
-            
 
+        };
+
+        void discardCards()
+        {
+        int i = 0;
+            for (int p=0;p<_numPlayers+1;p++)
+            {
+                for (int h=0;h<_players[p]._playerHands.size();h++ )
+                { 
+                    for (int c=0;c<_players[p]._playerHands[h]._handCards.size();c++ )
+                    {
+                        cout << "card " << i << " discarding\n";
+                        i++;
+                        _players[p]._playerHands[h].dealIndexCardFromHandToHand(0, _houseCards._discardPile, false);
+                    }
+                    
+                }
+                while (!_players[p]._playerHands.empty())
+                {
+                    // delete hands  {}{}{}{}continue here
+                    // Customer *cust = newcustomer.front();
+                    // newcustomer.erase(newcustomer.begin());
+                    // delete cust;
+                }
+            }
         };
 
         void calculateTurnResults()
@@ -469,7 +494,10 @@ class Game{
                         _players[p].playerWinsMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
                     }
 
-                    // else if (_players[p]._playerHands[h]._isSurrenderable)
+                    else if (_players[p]._playerHands[h]._isSurrendered)
+                    {
+                        _players[p].playerLosesMultiple(_players[p]._playerCurBet, 0.5);
+                    }
 
                     else if (_players[p]._playerHands[h]._handValue > dealerScore)
                     {
@@ -660,6 +688,9 @@ class Game{
 
             } else if (action == 'R') {
                 // Surrender
+                cout << "Surrender\n";
+                hand._isFinished = true;
+                hand._isSurrendered = true;
 
             } else {
                 cout << "action not in list";
