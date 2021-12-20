@@ -275,15 +275,21 @@ class Player {
 
         ~Player(){};
 
+        Player(Player&& other) :
+            _playerHands(std::move(other._playerHands))
+            {};
+
+
         void makePlayerNewHand(){ 
             Hand hand;
             _playerHands.emplace_back(std::move(hand));
         };
 
-        // void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
-        //     makePlayerNewHand();
-        //     houseCards.dealRandomCardFromShoeToHand(_playerHands.back(), isFaceUp);
-        // };
+        void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
+            makePlayerNewHand();
+            // houseCards.dealRandomCardFromShoeToHand(_playerHands.back(), isFaceUp);
+               houseCards._shoe.dealRandomCardFromHandToHand(_playerHands.back(), isFaceUp);
+        };
 
         void printPlayerData(){
             string playerTag;
@@ -320,13 +326,14 @@ class Player {
 
 
 class Game{
-    // Dealer is last player.
+    // Dealer is last player, but is the dealer and not considered a "player".
     private:
 
     public:
-        Game(int numPlayers, long long int initialPlayerMoney, int numDecks){
-            //add logic to disallow <=1 and other bad values {}{}{}{}
-            // This Constructor will be a single human player vs dealer
+        Game(int numPlayers, long long int initialPlayerMoney, int numDecks) :
+            _houseCards(HouseCards(numDecks))
+        
+        {
             
             _numPlayers = numPlayers;
             _initialPlayerMoney = initialPlayerMoney;
@@ -334,8 +341,8 @@ class Game{
             _numHumanPlayers = 1; //this is at least 1
             _numComputerPlayers = 0; //this is 0 or more
             _numGamblers = _numHumanPlayers + _numComputerPlayers; //human players + computer players (is _numPlayers - 1)
-            // _numPlayers = _numGamblers + 1; //human players + computer players + dealer
-            // seatPlayers();
+             seatPlayers();
+            
         };
         // One constructor should be numHumanPlayers, numComputerPlayers
 
@@ -348,12 +355,34 @@ class Game{
         //vector.insert(begin(), 1, val) //ref for adding dealer
         void playRound(){
 
-            // dealInitialCards();
+            dealInitialCards();
 
             printRoundStatus();
 
 
         };
+
+        void dealInitialCards()
+        {
+            for (int p=0;p<_numPlayers+1;p++){
+                // First card
+                if (p < _numPlayers){
+                    //Player card, player cards are always face up
+                    _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
+                } else {
+                    //Dealer card, first is face down
+                    _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], false);
+                }
+            }
+
+            for (int p=0;p<_numPlayers+1;p++){
+                // Second card is always face up
+                    _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
+                }
+            
+
+        };
+
 
         void printRoundStatus(){
             //print all information relevant to round
@@ -366,20 +395,23 @@ class Game{
         };
 
         void seatPlayers(){
-            for (int p=0;p<_numPlayers;p++){
-                if (p < _numPlayers-1){
-                    // cout << "add H Player" << endl;
-                    // _players.push_back(Player('H', p, _initialPlayerMoney));
-                    // _players.push_back(std::move(Player('H', p, _initialPlayerMoney)));
+            for (int p=0;p<_numPlayers+1;p++){
+                // cout << "loop number: " << p << " of players: " << _numPlayers << "\n";
+                if (p < _numPlayers){
+                    cout << "add H Player" << endl;
+                    _players.emplace_back(std::move(Player('H', p, _initialPlayerMoney)));
                 } else {
                     //can shuffle players here prior to adding dealer
-                    // cout << "add D Player" << endl;
-                    // _players.push_back(Player('D', p, _initialPlayerMoney));
-                    // _players.push_back(std::move(Player('D', p, _initialCasinoInitialMoney)));
+                    cout << "add D Player" << endl;
+                    _players.emplace_back(std::move(Player('D', p, _initialCasinoInitialMoney)));
                 }
             }
         };
 
+        // void addPlayer(char playerType, int playerNumber, long long int playerMoney){
+        //     // Player addPlayer = Player(playerType, playerNumber, playerMoney);
+        //     // _players.emplace_back(std::move(addPlayer));
+        // }
 
         int _numHumanPlayers; //this is at least 1
         int _numComputerPlayers; //this is 0 or more
@@ -392,10 +424,10 @@ class Game{
         long long int _initialCasinoInitialMoney;
 
         // GameRound _curRound;
-        // vector<Player> _players;
+        vector<Player> _players;
         int _numDecks;
 
-        // HouseCards _houseCards;
+        HouseCards _houseCards;
         // HouseCards _houseCards(_numDecks);
 
 };

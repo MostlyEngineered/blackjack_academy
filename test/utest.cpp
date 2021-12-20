@@ -159,6 +159,12 @@ TEST(CardInstantiation, DealFromHouse){
 
 }
 
+TEST(CardInstantiation, TestGameInitiation){
+    Game test_game = Game(1, 50000, 1);
+
+    test_game.playRound();
+
+}
 
 int main(int argc, char **argv){
 
