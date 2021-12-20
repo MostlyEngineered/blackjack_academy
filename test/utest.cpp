@@ -146,7 +146,7 @@ TEST(CardInstantiation, MakePlayerHand){
 }
 
 TEST(CardInstantiation, DealFromHouse){
-    Player test_player = Player('H', 0, 50000);
+    Player test_player = Player('H', 5, 50000);
     // Shoe test_cards = Shoe(1);
     HouseCards test_house(1);
 
@@ -160,7 +160,8 @@ TEST(CardInstantiation, DealFromHouse){
 }
 
 TEST(CardInstantiation, TestGameInitiation){
-    Game test_game = Game(1, 50000, 1);
+    Game test_game = Game(3, 50000, 1);
+    // players, initial money, decks
 
     test_game.playRound();
 

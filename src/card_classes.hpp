@@ -255,14 +255,17 @@ class Player {
                 _isDealer = true;
                 _isHuman = false;
                 _playerMoney = 50000000;
+                cout << "initiate dealer money (" << _playerNumber << "), " << _playerMoney << "\n";
             } else if (playerType == 'C'){
                 _isDealer = false;
                 _isHuman = false;
                 _playerMoney = playerMoney;
+                cout << "initiate computer money (" << _playerNumber << "), " << _playerMoney << "\n";
             } else if (playerType == 'H'){
                 _isDealer = false;
                 _isHuman = true;
                 _playerMoney = playerMoney;
+                cout << "initiate player money (" << _playerNumber << "), " << _playerMoney << "\n";
             } else {
                 cout << "Invalid Player type" << endl;
             }
@@ -276,8 +279,18 @@ class Player {
         ~Player(){};
 
         Player(Player&& other) :
-            _playerHands(std::move(other._playerHands))
+            _playerHands(std::move(other._playerHands)),
+            _playerMoney(other._playerMoney),
+            _playerNumber(other._playerNumber),
+            _isDealer(other._isDealer),
+            _isHuman(other._isHuman),
+            _isFinished(other._isFinished)
+
             {};
+
+        Player( const Player& ) = delete; // copy constructor 
+        // Player& Player::operator=( const Player& obj ) {};// copy assignment operator   
+        // Player& operator=(Player&& obj) {}; // move assignment operator 
 
 
         void makePlayerNewHand(){ 
@@ -297,6 +310,8 @@ class Player {
                 playerTag = " (D)";
             } else if (_isHuman) {
                 playerTag = " (H)";
+            } else if (_playerType == 'C') {
+                playerTag = "";
             } else {
                 playerTag = "";
             }
@@ -307,6 +322,7 @@ class Player {
             for (int h=0;h<_playerHands.size();h++ ){
                 cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
                 _playerHands[h].printHand();
+                cout << endl;
             }
         }
 
@@ -334,25 +350,74 @@ class Game{
             _houseCards(HouseCards(numDecks))
         
         {
-            
+            // Start with numHumanPlayers always 1
             _numPlayers = numPlayers;
             _initialPlayerMoney = initialPlayerMoney;
             _numDecks=numDecks;
             _numHumanPlayers = 1; //this is at least 1
-            _numComputerPlayers = 0; //this is 0 or more
+            _numComputerPlayers = _numPlayers - 1; //this is 0 or more
             _numGamblers = _numHumanPlayers + _numComputerPlayers; //human players + computer players (is _numPlayers - 1)
              seatPlayers();
             
         };
-        // One constructor should be numHumanPlayers, numComputerPlayers
 
+        // void seatPlayers(){
+        //     for (int p=0;p<_numPlayers+1;p++){
+        //         // cout << "loop number: " << p << " of players: " << _numPlayers << "\n";
+        //         if (p < _numPlayers){
+        //             cout << "add H Player" << endl;
+        //             _players.emplace_back(std::move(Player('H', p, _initialPlayerMoney)));
+        //             _players[p]._playerNumber = p;  // save player number for convenience
+        //             cout << "player num: " << p << "\n";
+        //             cout << "player num: " << _players[p]._playerNumber << "\n";
+        //         } else {
+        //             //can shuffle players here prior to adding dealer
+        //             cout << "add D Player" << endl;
+        //             _players.emplace_back(std::move(Player('D', p, _initialCasinoInitialMoney)));
+        //             _players[p]._playerNumber = p;  // save player number for convenience
+        //             cout << "player num: " << p << "\n";
+        //             cout << "player num: " << _players[p]._playerNumber << "\n";
+
+        //         }
+        //     }
+        // };
+
+        void seatPlayers(){
+            int ii = 5;
+            for (int p=0;p<_numHumanPlayers;p++){
+                cout << "add H Player" << endl;
+                _players.emplace_back(std::move(Player('H', ii, _initialPlayerMoney)));
+                // _players[ii]._playerNumber = ii;  // save player number for convenience
+                cout << "player num: " << ii << "\n";
+                cout << "player num: " << _players[ii]._playerNumber << "\n";
+                ii++;
+                }
+            
+            for (int p=0;p<_numComputerPlayers;p++){
+                cout << "add C Player" << endl;
+                _players.emplace_back(std::move(Player('C', ii, _initialPlayerMoney)));
+                // _players[ii]._playerNumber = ii;  // save player number for convenience
+                cout << "player num: " << ii << "\n";
+                cout << "player num: " << _players[ii]._playerNumber << "\n";
+                ii++;
+                }
+
+            // Add dealer player
+            
+            cout << "add D Player" << endl;
+            _players.emplace_back(std::move(Player('D', ii, _initialCasinoInitialMoney)));
+            // _players[ii]._playerNumber = ii;  // save player number for convenience
+            cout << "player num: " << ii << "\n";
+            cout << "player num: " << _players[ii]._playerNumber << "\n";
+        
+        };
+
+        // One constructor should be numHumanPlayers, numComputerPlayers
 
         // Game();
 
         // ~Game();
 
-
-        //vector.insert(begin(), 1, val) //ref for adding dealer
         void playRound(){
 
             dealInitialCards();
@@ -368,10 +433,17 @@ class Game{
                 // First card
                 if (p < _numPlayers){
                     //Player card, player cards are always face up
-                    _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
+                    // _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
+                    _players[p].dealCardToPlayerNewHand(_houseCards, true);
+                    cout << "dealing card to " << p << "\n";
+                    cout << "dealing card to " << _players[p]._playerNumber << "\n";
                 } else {
                     //Dealer card, first is face down
-                    _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], false);
+                    // _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], false);
+                    _players[p].dealCardToPlayerNewHand(_houseCards, false);
+                    cout << "dealing card to " << p << "\n";
+                    cout << "dealing card to " << _players[p]._playerNumber << "\n";
+
                 }
             }
 
@@ -390,23 +462,18 @@ class Game{
             cout << "Round number: " << _roundNum << endl;
             // for (auto player : _players){
             //     player.printPlayerData();
+            //     player
             // }
 
+            for (int p=0;p<_numPlayers+1;p++){
+                // Second card is always face up
+                    cout << "Player " << p << endl;
+                    _players[p].printPlayerData();
+                }
+
         };
 
-        void seatPlayers(){
-            for (int p=0;p<_numPlayers+1;p++){
-                // cout << "loop number: " << p << " of players: " << _numPlayers << "\n";
-                if (p < _numPlayers){
-                    cout << "add H Player" << endl;
-                    _players.emplace_back(std::move(Player('H', p, _initialPlayerMoney)));
-                } else {
-                    //can shuffle players here prior to adding dealer
-                    cout << "add D Player" << endl;
-                    _players.emplace_back(std::move(Player('D', p, _initialCasinoInitialMoney)));
-                }
-            }
-        };
+
 
         // void addPlayer(char playerType, int playerNumber, long long int playerMoney){
         //     // Player addPlayer = Player(playerType, playerNumber, playerMoney);
@@ -428,7 +495,6 @@ class Game{
         int _numDecks;
 
         HouseCards _houseCards;
-        // HouseCards _houseCards(_numDecks);
 
 };
 
