@@ -254,153 +254,148 @@ class  HouseCards {
 };
 
 
-class Player {
-    private:
+// class Player {
+//     private:
 
-    public:
-        Player(char playerType, int playerNumber, long long int playerMoney) {
-            _playerType = playerType;
-            _playerNumber = playerNumber;
+//     public:
+//         Player(char playerType, int playerNumber, long long int playerMoney) {
+//             _playerType = playerType;
+//             _playerNumber = playerNumber;
 
-            if (playerType == 'D'){
-                _isDealer = true;
-                _isHuman = false;
-                _isBot = false;
-                _playerMoney = 50000000;
-                cout << "initiate dealer money (" << _playerNumber << "), " << _playerMoney << "\n";
-            } else if (playerType == 'C'){
-                _isDealer = false;
-                _isHuman = false;
-                _isBot = true;
-                _playerMoney = playerMoney;
-                cout << "initiate computer money (" << _playerNumber << "), " << _playerMoney << "\n";
-            } else if (playerType == 'H'){
-                _isDealer = false;
-                _isHuman = true;
-                _isBot = false;
-                _playerMoney = playerMoney;
-                cout << "initiate player money (" << _playerNumber << "), " << _playerMoney << "\n";
-            } else {
-                cout << "Invalid Player type" << endl;
-            }
+//             if (playerType == 'D'){
+//                 _isDealer = true;
+//                 _isHuman = false;
+//                 _isBot = false;
+//                 _playerMoney = 50000000;
+//                 cout << "initiate dealer money (" << _playerNumber << "), " << _playerMoney << "\n";
+//             } else if (playerType == 'C'){
+//                 _isDealer = false;
+//                 _isHuman = false;
+//                 _isBot = true;
+//                 _playerMoney = playerMoney;
+//                 cout << "initiate computer money (" << _playerNumber << "), " << _playerMoney << "\n";
+//             } else if (playerType == 'H'){
+//                 _isDealer = false;
+//                 _isHuman = true;
+//                 _isBot = false;
+//                 _playerMoney = playerMoney;
+//                 cout << "initiate player money (" << _playerNumber << "), " << _playerMoney << "\n";
+//             } else {
+//                 cout << "Invalid Player type" << endl;
+//             }
             
-        };
+//         };
 
-        Player(char playerType, int playerNumber){
-            Player(playerType, playerNumber, 50000);
-        };
+//         Player(char playerType, int playerNumber){
+//             Player(playerType, playerNumber, 50000);
+//         };
 
-        ~Player(){};
+//         ~Player(){};
 
-        Player(Player&& other) :
-            _playerHands(std::move(other._playerHands)),
-            _playerType(other._playerType),
-            _playerMoney(other._playerMoney),
-            _playerNumber(other._playerNumber),
-            _isDealer(other._isDealer),
-            _isBot(other._isBot),
-            _isHuman(other._isHuman),
-            _isFinished(other._isFinished),
-            _playerCurBet(other._playerCurBet)
+//         Player(Player&& other) :
+//             _playerHands(std::move(other._playerHands)),
+//             _playerType(other._playerType),
+//             _playerMoney(other._playerMoney),
+//             _playerNumber(other._playerNumber),
+//             _isDealer(other._isDealer),
+//             _isBot(other._isBot),
+//             _isHuman(other._isHuman),
+//             _isFinished(other._isFinished),
+//             _playerCurBet(other._playerCurBet)
 
-            {};
+//             {};
 
-        Player( const Player& ) = delete; // copy constructor 
-        // Player& Player::operator=( const Player& obj ) {};// copy assignment operator   
-        // Player& operator=(Player&& obj) {}; // move assignment operator 
+//         Player( const Player& ) = delete; // copy constructor 
+//         // Player& Player::operator=( const Player& obj ) {};// copy assignment operator   
+//         // Player& operator=(Player&& obj) {}; // move assignment operator 
 
 
-        void makePlayerNewHand(){ 
-            Hand hand;
-            _playerHands.emplace_back(std::move(hand));
-        };
+//         void makePlayerNewHand(){ 
+//             Hand hand;
+//             _playerHands.emplace_back(std::move(hand));
+//         };
 
-        void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
-            makePlayerNewHand();
-            houseCards._shoe.dealRandomCardFromHandToHand(_playerHands.back(), isFaceUp);
-        };
+//         void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
+//             makePlayerNewHand();
+//             houseCards._shoe.dealRandomCardFromHandToHand(_playerHands.back(), isFaceUp);
+//         };
 
-        void discardHands(HouseCards &houseCards){
-            for (int h=0;h<_playerHands.size();h++ )
-            { 
-                for (int c=0;c<_playerHands[h]._handCards.size();c++ )
-                { 
-                    _playerHands[h].dealIndexCardFromHandToHand(c, houseCards._discardPile, false);
+//         void discardHands(HouseCards &houseCards){
+//             for (int h=0;h<_playerHands.size();h++ )
+//             { 
+//                 for (int c=0;c<_playerHands[h]._handCards.size();c++ )
+//                 { 
+//                     _playerHands[h].dealIndexCardFromHandToHand(c, houseCards._discardPile, false);
                
-                }
-            }
-            _playerHands.clear();
-            // _playerHands = {};
-        };
+//                 }
+//             }
+//             _playerHands.clear();
+//             // _playerHands = {};
+//         };
 
-        void printPlayerData(){
-            string playerTag;
-            if (_isDealer){
-                playerTag = " (D)";
-            } else if (_isHuman) {
-                playerTag = " (H)";
-            } else if (_playerType == 'C') {
-                playerTag = " (C)";
-            } else {
-                playerTag = "(invalid player tag)";
-            }
+//         void printPlayerData(){
+//             string playerTag;
+//             if (_isDealer){
+//                 playerTag = " (D)";
+//             } else if (_isHuman) {
+//                 playerTag = " (H)";
+//             } else if (_playerType == 'C') {
+//                 playerTag = " (C)";
+//             } else {
+//                 playerTag = "(invalid player tag)";
+//             }
 
-            cout << "Player " << _playerNumber << ":" << playerTag << endl;
-            cout << "Money: " << _playerMoney << endl;
+//             cout << "Player " << _playerNumber << ":" << playerTag << endl;
+//             cout << "Money: " << _playerMoney << endl;
 
-            for (int h=0;h<_playerHands.size();h++ ){
-                cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
-                _playerHands[h].printHand();
-                cout << endl;
-            }
-        }
+//             for (int h=0;h<_playerHands.size();h++ ){
+//                 cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
+//                 _playerHands[h].printHand();
+//                 cout << endl;
+//             }
+//         }
 
-        void updateIsFinished()
-        {
-            bool isFinished = true;
-            for (int h=0;h<_playerHands.size();h++ )
-            {
-                if (_playerHands[h]._isFinished == false) 
-                {
-                    isFinished = false;
-                }
-            }
-            _isFinished = isFinished;
-        }
+//         void updateIsFinished()
+//         {
+//             bool isFinished = true;
+//             for (int h=0;h<_playerHands.size();h++ )
+//             {
+//                 if (_playerHands[h]._isFinished == false) 
+//                 {
+//                     isFinished = false;
+//                 }
+//             }
+//             _isFinished = isFinished;
+//         }
 
-        void playerLoses(int curBet)
-        {
-            _playerMoney -= curBet;
-        };
+//         void playerLoses(int curBet)
+//         {
+//             _playerMoney -= curBet;
+//         };
 
-        void playerLosesMultiple(int curBet, float multiplier)
-        {
-            _playerMoney -= ((float)curBet * multiplier);
-        };
+//         void playerLosesMultiple(int curBet, float multiplier)
+//         {
+//             _playerMoney -= ((float)curBet * multiplier);
+//         };
 
-        void playerWins(int curBet)
-        {
-            _playerMoney += curBet;
-        };
+//         void playerWins(int curBet)
+//         {
+//             _playerMoney += curBet;
+//         };
 
-        void playerWinsMultiple(int curBet, float multiplier)
-        {
-            _playerMoney += ((float)curBet * multiplier);
-        };
+//         void playerWinsMultiple(int curBet, float multiplier)
+//         {
+//             _playerMoney += ((float)curBet * multiplier);
+//         };
 
-        vector<Hand> _playerHands; //splits can make a player have multiple hands
-        long long int _playerMoney; //how much money the player has
-        int _playerNumber; //player number (this keeps track of player round resolution order)
-        char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
-        bool _isDealer;
-        bool _isHuman;
-        bool _isBot;
-        bool _isFinished = false; //player is finished when all his current round hands are finished, when hands are cleaned up this should be reset back to false
-        int _playerCurBet;
+//         vector<Hand> _playerHands; //splits can make a player have multiple hands
+//         long long int _playerMoney; //how much money the player has
+//         int _playerNumber; //player number (this keeps track of player round resolution order)
+//         char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
+//         bool _isDealer;
+//         bool _isHuman;
+//         bool _isBot;
+//         bool _isFinished = false; //player is finished when all his current round hands are finished, when hands are cleaned up this should be reset back to false
+//         int _playerCurBet;
 
-};
-
-
-
-
-
+// };
