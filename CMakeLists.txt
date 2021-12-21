@@ -14,7 +14,7 @@ add_subdirectory(thirdparty/googletest)
 add_executable(blackjack_academy src/main.cpp src/game_classes.cpp src/card_classes.cpp)
 
 # Add the unit test executable
-add_executable(test test/utest.cpp src/card_classes.cpp)
+add_executable(test test/utest.cpp src/game_classes.cpp src/card_classes.cpp)
 # add_executable(test src/main.cpp src/card_classes.cpp)
 
 target_link_libraries(test 
