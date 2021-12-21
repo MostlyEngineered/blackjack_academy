@@ -4,7 +4,8 @@
 #include <string>
 #include <optional>
 #include <vector>
-#include "../src/card_classes.hpp"
+
+#include "../src/game_classes.hpp"
 
 // TEST(CardInstantiation, MakeDecks){ // old test
 //     HouseCards test_cards = HouseCards(2);

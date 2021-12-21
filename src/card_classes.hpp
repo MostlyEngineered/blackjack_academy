@@ -401,371 +401,371 @@ class Player {
 };
 
 
-class Game{
-    // Dealer is last player, but is the dealer and not considered a "player".
-    private:
+// class Game{
+//     // Dealer is last player, but is the dealer and not considered a "player".
+//     private:
 
-    public:
-        Game(int numPlayers, long long int initialPlayerMoney, int numDecks) :
-            _houseCards(HouseCards(numDecks))
+//     public:
+//         Game(int numPlayers, long long int initialPlayerMoney, int numDecks) :
+//             _houseCards(HouseCards(numDecks))
         
-        {
-            // Start with numHumanPlayers always 1
-            _numPlayers = numPlayers;
-            _initialPlayerMoney = initialPlayerMoney;
-            _numDecks=numDecks;
-            _numHumanPlayers = 1; //this is at least 1
-            _numComputerPlayers = _numPlayers - 1; //this is 0 or more
-            _numGamblers = _numHumanPlayers + _numComputerPlayers; //human players + computer players (is _numPlayers - 1)
-             seatPlayers();
+//         {
+//             // Start with numHumanPlayers always 1
+//             _numPlayers = numPlayers;
+//             _initialPlayerMoney = initialPlayerMoney;
+//             _numDecks=numDecks;
+//             _numHumanPlayers = 1; //this is at least 1
+//             _numComputerPlayers = _numPlayers - 1; //this is 0 or more
+//             _numGamblers = _numHumanPlayers + _numComputerPlayers; //human players + computer players (is _numPlayers - 1)
+//              seatPlayers();
             
-        };
+//         };
 
 
-        void seatPlayers(){
-            int ii = 0;
-            for (int p=0;p<_numHumanPlayers;p++){
-                cout << "add H Player" << endl;
-                _players.emplace_back(std::move(Player('H', ii, _initialPlayerMoney)));
-                ii++;
-                }
+//         void seatPlayers(){
+//             int ii = 0;
+//             for (int p=0;p<_numHumanPlayers;p++){
+//                 cout << "add H Player" << endl;
+//                 _players.emplace_back(std::move(Player('H', ii, _initialPlayerMoney)));
+//                 ii++;
+//                 }
             
-            for (int p=0;p<_numComputerPlayers;p++){
-                cout << "add C Player" << endl;
-                _players.emplace_back(std::move(Player('C', ii, _initialPlayerMoney)));
-                ii++;
-                }
+//             for (int p=0;p<_numComputerPlayers;p++){
+//                 cout << "add C Player" << endl;
+//                 _players.emplace_back(std::move(Player('C', ii, _initialPlayerMoney)));
+//                 ii++;
+//                 }
 
-            // Add dealer player
+//             // Add dealer player
             
-            cout << "add D Player" << endl;
-            _players.emplace_back(std::move(Player('D', ii, _initialCasinoInitialMoney)));
+//             cout << "add D Player" << endl;
+//             _players.emplace_back(std::move(Player('D', ii, _initialCasinoInitialMoney)));
         
-        };
+//         };
 
 
-        void playRound(){
+//         void playRound(){
 
-            dealInitialCards();
+//             dealInitialCards();
 
-            printRoundStatus();
+//             printRoundStatus();
 
-            takeInitialBets();
+//             takeInitialBets();
 
-            processPlayerTurns();
+//             processPlayerTurns();
 
-            calculateTurnResults();
+//             calculateTurnResults();
 
-            discardCards();
+//             discardCards();
 
-            _roundNum = _roundNum + 1;
+//             _roundNum = _roundNum + 1;
 
 
-        };
+//         };
 
-        void discardCards()
-        {
-            int i = 0;
-            for (int p=0;p<_numPlayers+1;p++)
-            {
-                _players[p].discardHands(_houseCards);
+//         void discardCards()
+//         {
+//             int i = 0;
+//             for (int p=0;p<_numPlayers+1;p++)
+//             {
+//                 _players[p].discardHands(_houseCards);
 
-                cout << "print discard pile\n";
-                _houseCards._discardPile.printHand();
+//                 cout << "print discard pile\n";
+//                 _houseCards._discardPile.printHand();
 
-            }
-        };
+//             }
+//         };
 
-        void calculateTurnResults()
-        {
-            int dealerScore =  _players[_players.size()-1]._playerHands[0]._handValue;
+//         void calculateTurnResults()
+//         {
+//             int dealerScore =  _players[_players.size()-1]._playerHands[0]._handValue;
 
-            for (int p=0;p<_numPlayers;p++)
-            {
-                for (int h=0;h<_players[p]._playerHands.size();h++ )
-                {
-                    if (_players[p]._playerHands[h]._isBust) 
-                    {
-                        //Player is bust, loses
-                        cout << "Calc result: bust\n";
-                        _players[p].playerLoses(_players[p]._playerCurBet);
-                    }
-                    else if (_players[p]._playerHands[h]._isBlackjack) 
-                    {
-                        //Player is blackjack, use house rules
-                        cout << "Calc result: blackjack\n";
-                        _players[p].playerWinsMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
-                    }
+//             for (int p=0;p<_numPlayers;p++)
+//             {
+//                 for (int h=0;h<_players[p]._playerHands.size();h++ )
+//                 {
+//                     if (_players[p]._playerHands[h]._isBust) 
+//                     {
+//                         //Player is bust, loses
+//                         cout << "Calc result: bust\n";
+//                         _players[p].playerLoses(_players[p]._playerCurBet);
+//                     }
+//                     else if (_players[p]._playerHands[h]._isBlackjack) 
+//                     {
+//                         //Player is blackjack, use house rules
+//                         cout << "Calc result: blackjack\n";
+//                         _players[p].playerWinsMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
+//                     }
 
-                    else if (_players[p]._playerHands[h]._isSurrendered)
-                    {
-                        cout << "Calc result: surrendered\n";
-                        _players[p].playerLosesMultiple(_players[p]._playerCurBet, 0.5);
+//                     else if (_players[p]._playerHands[h]._isSurrendered)
+//                     {
+//                         cout << "Calc result: surrendered\n";
+//                         _players[p].playerLosesMultiple(_players[p]._playerCurBet, 0.5);
 
-                    }
+//                     }
 
-                    else if (_players[p]._playerHands[h]._handValue > dealerScore)
-                    {
-                        //Player wins, due to higher score and not bust (bust checked earlier)
-                        cout << "Calc result: win\n";
-                        _players[p].playerWins(_players[p]._playerCurBet);
-                    } 
-                    else if (_players[p]._playerHands[h]._handValue < dealerScore) 
-                    {
-                        //Player loses, due to lower score
-                        cout << "Calc result: lose\n";
-                        _players[p].playerLoses(_players[p]._playerCurBet);
-                    } 
-                    else if (_players[p]._playerHands[h]._handValue == dealerScore) 
-                    {
-                        //Player push
-                        cout << "Calc result: push\n";
-                        if (DEALER_PUSH_RESULT == "tie")
-                        {
-                            // Do nothing in tie push
+//                     else if (_players[p]._playerHands[h]._handValue > dealerScore)
+//                     {
+//                         //Player wins, due to higher score and not bust (bust checked earlier)
+//                         cout << "Calc result: win\n";
+//                         _players[p].playerWins(_players[p]._playerCurBet);
+//                     } 
+//                     else if (_players[p]._playerHands[h]._handValue < dealerScore) 
+//                     {
+//                         //Player loses, due to lower score
+//                         cout << "Calc result: lose\n";
+//                         _players[p].playerLoses(_players[p]._playerCurBet);
+//                     } 
+//                     else if (_players[p]._playerHands[h]._handValue == dealerScore) 
+//                     {
+//                         //Player push
+//                         cout << "Calc result: push\n";
+//                         if (DEALER_PUSH_RESULT == "tie")
+//                         {
+//                             // Do nothing in tie push
                             
                         
-                        } 
-                        else if (DEALER_PUSH_RESULT == "win")
-                        {
-                            _players[p].playerWins(_players[p]._playerCurBet);
-                        } 
-                        else if (DEALER_PUSH_RESULT == "lose")
-                        {
-                            _players[p].playerLoses(_players[p]._playerCurBet);
-                        }
-                        else
-                        {
-                            cout << "Invalid Dealer rule on push";
-                        }
+//                         } 
+//                         else if (DEALER_PUSH_RESULT == "win")
+//                         {
+//                             _players[p].playerWins(_players[p]._playerCurBet);
+//                         } 
+//                         else if (DEALER_PUSH_RESULT == "lose")
+//                         {
+//                             _players[p].playerLoses(_players[p]._playerCurBet);
+//                         }
+//                         else
+//                         {
+//                             cout << "Invalid Dealer rule on push";
+//                         }
   
                         
-                    }
+//                     }
 
-                }
-                // DEALER_PUSH_RESULT
-                // if _players[p]
-            }
+//                 }
+//                 // DEALER_PUSH_RESULT
+//                 // if _players[p]
+//             }
 
 
-        };
+//         };
 
-        void takeInitialBets()
-        {
-            std::string line;
-            int curBet;
+//         void takeInitialBets()
+//         {
+//             std::string line;
+//             int curBet;
 
-            for (int p=0;p<_numPlayers;p++)
-            //take all player bets
-            {
-                if (_players[p]._isHuman) {
+//             for (int p=0;p<_numPlayers;p++)
+//             //take all player bets
+//             {
+//                 if (_players[p]._isHuman) {
 
-                    cout << "Enter an bet for Player " << _players[p]._playerNumber << ":\n";
+//                     cout << "Enter an bet for Player " << _players[p]._playerNumber << ":\n";
 
-                    while (std::getline(std::cin, line))
-                    {
-                        std::stringstream ss(line);
-                        if (ss >> curBet)
-                        {
-                            if (ss.eof())
-                            {   // Success
-                                break;
-                            }
-                        }
-                        std::cout << "Invalid entry, retry bet entry!" << endl;
-                    }
-                    std::cout << "Bet: " << curBet << endl; 
+//                     while (std::getline(std::cin, line))
+//                     {
+//                         std::stringstream ss(line);
+//                         if (ss >> curBet)
+//                         {
+//                             if (ss.eof())
+//                             {   // Success
+//                                 break;
+//                             }
+//                         }
+//                         std::cout << "Invalid entry, retry bet entry!" << endl;
+//                     }
+//                     std::cout << "Bet: " << curBet << endl; 
  
 
-                }  else if (_players[p]._isBot) {
-                    // {}{}{} Add bot logic for gambling
-                    _players[p]._playerCurBet = 30;
+//                 }  else if (_players[p]._isBot) {
+//                     // {}{}{} Add bot logic for gambling
+//                     _players[p]._playerCurBet = 30;
 
-                } else {
-                    cout << "invalid betting!\n";
-                }
-
-
-
-            }
-
-        };
-
-        // char* TakeNCharactersFromInput(int n)
-        //     {
-        //         char *input = new char[n+2];
-        //         std::cin.getline(input, n+1);
-        //         cin.clear();
-        //         fflush(stdin);
-        //         return input;
-        //     };
+//                 } else {
+//                     cout << "invalid betting!\n";
+//                 }
 
 
-        void processPlayerTurns()
-        // process all player turns
-        {
-            char curAction;
-            int ii; //counter for active hand
 
-            for (int p=0;p<_numPlayers+1;p++){
-                //process all player turns
-                    if (_players[p]._isHuman){
-                        //Accept actions to process turn
-                        while (_players[p]._isFinished == false)
-                        {
-                            ii = 0;
-                            while (true) // this should have some logic to exit besides a break
-                            {
-                                cout << "Select action for Player " << _players[p]._playerNumber << ", Hand " << ii << "\n";
-                                cout << "Possible actions [";
-                                for (char action :  _players[p]._playerHands[ii]._possibleActions)
-                                {
-                                    cout << action << " ";
-                                }
-                                cout << "]\n";
+//             }
+
+//         };
+
+//         // char* TakeNCharactersFromInput(int n)
+//         //     {
+//         //         char *input = new char[n+2];
+//         //         std::cin.getline(input, n+1);
+//         //         cin.clear();
+//         //         fflush(stdin);
+//         //         return input;
+//         //     };
+
+
+//         void processPlayerTurns()
+//         // process all player turns
+//         {
+//             char curAction;
+//             int ii; //counter for active hand
+
+//             for (int p=0;p<_numPlayers+1;p++){
+//                 //process all player turns
+//                     if (_players[p]._isHuman){
+//                         //Accept actions to process turn
+//                         while (_players[p]._isFinished == false)
+//                         {
+//                             ii = 0;
+//                             while (true) // this should have some logic to exit besides a break
+//                             {
+//                                 cout << "Select action for Player " << _players[p]._playerNumber << ", Hand " << ii << "\n";
+//                                 cout << "Possible actions [";
+//                                 for (char action :  _players[p]._playerHands[ii]._possibleActions)
+//                                 {
+//                                     cout << action << " ";
+//                                 }
+//                                 cout << "]\n";
                                 
-                                // {}{}{} adjust input to transform to capital letters and only first, then clear other character in stdin
-                                std::cin >> curAction;
-                                // curAction = TakeNCharactersFromInput(1)[0];
+//                                 // {}{}{} adjust input to transform to capital letters and only first, then clear other character in stdin
+//                                 std::cin >> curAction;
+//                                 // curAction = TakeNCharactersFromInput(1)[0];
                                 
-                                if ( std::find(_players[p]._playerHands[ii]._possibleActions.begin(), 
-                                     _players[p]._playerHands[ii]._possibleActions.end(), curAction) != 
-                                     _players[p]._playerHands[ii]._possibleActions.end() )
+//                                 if ( std::find(_players[p]._playerHands[ii]._possibleActions.begin(), 
+//                                      _players[p]._playerHands[ii]._possibleActions.end(), curAction) != 
+//                                      _players[p]._playerHands[ii]._possibleActions.end() )
 
-                                {
-                                    cout << "valid action selected\n";
-                                    //Execute Valid command
-                                    executePlayerAction(curAction, _players[p]._playerHands[ii], _houseCards);
-                                    printRoundStatus();
+//                                 {
+//                                     cout << "valid action selected\n";
+//                                     //Execute Valid command
+//                                     executePlayerAction(curAction, _players[p]._playerHands[ii], _houseCards);
+//                                     printRoundStatus();
 
 
-                                } else {
-                                    cout << "invalid action selected, retry command\n";
-                                }
+//                                 } else {
+//                                     cout << "invalid action selected, retry command\n";
+//                                 }
 
-                                _players[p].updateIsFinished();
-                                if (_players[p]._isFinished)
-                                {
-                                    break;
-                                }
+//                                 _players[p].updateIsFinished();
+//                                 if (_players[p]._isFinished)
+//                                 {
+//                                     break;
+//                                 }
 
-                            }
-                        }
+//                             }
+//                         }
                         
 
-                    } else if (_players[p]._isBot){
-                        //Use bot logic to process turn
-                        //start debug with always hit
+//                     } else if (_players[p]._isBot){
+//                         //Use bot logic to process turn
+//                         //start debug with always hit
 
-                    } else if (_players[p]._isDealer){
-                        //Use Dealer logic to process turn 
+//                     } else if (_players[p]._isDealer){
+//                         //Use Dealer logic to process turn 
 
-                        // DEALER_HIT_SOFT_17
-                        if (_players[p]._playerHands[0]._handValue <= DEALER_HIT_LIMIT)                            
-                        { 
-                            // Dealer must hit on anything equal to or less than DEALER_HIT_LIMIT
-                            executePlayerAction('H', _players[p]._playerHands[0], _houseCards);
-                        } else {
-                            // Dealer must stay if greater than the DEALER_HIT_LIMIT
-                            executePlayerAction('S', _players[p]._playerHands[0], _houseCards);
-                        }
+//                         // DEALER_HIT_SOFT_17
+//                         if (_players[p]._playerHands[0]._handValue <= DEALER_HIT_LIMIT)                            
+//                         { 
+//                             // Dealer must hit on anything equal to or less than DEALER_HIT_LIMIT
+//                             executePlayerAction('H', _players[p]._playerHands[0], _houseCards);
+//                         } else {
+//                             // Dealer must stay if greater than the DEALER_HIT_LIMIT
+//                             executePlayerAction('S', _players[p]._playerHands[0], _houseCards);
+//                         }
 
-                    } 
-                }
-        };
+//                     } 
+//                 }
+//         };
 
-        void executePlayerAction(char action, Hand &hand, HouseCards &houseCards)
-        {
-            // 'H', 'S', 'P', 'D', 'R'
-            //  Hit, Stay, Split, DoubleDown, Surrender
-            cout << "execute " << action << "\n";
-            if (action == 'H') {
-                // Hit
-                cout << "Hit\n";
-                houseCards._shoe.dealRandomCardFromHandToHand(hand, true);
+//         void executePlayerAction(char action, Hand &hand, HouseCards &houseCards)
+//         {
+//             // 'H', 'S', 'P', 'D', 'R'
+//             //  Hit, Stay, Split, DoubleDown, Surrender
+//             cout << "execute " << action << "\n";
+//             if (action == 'H') {
+//                 // Hit
+//                 cout << "Hit\n";
+//                 houseCards._shoe.dealRandomCardFromHandToHand(hand, true);
 
 
-            } else if (action == 'S') {
-                // Stay
-                cout << "Stay\n";
-                hand._isFinished = true;
+//             } else if (action == 'S') {
+//                 // Stay
+//                 cout << "Stay\n";
+//                 hand._isFinished = true;
 
-            } else if (action == 'P') {
-                // Split
+//             } else if (action == 'P') {
+//                 // Split
 
-            } else if (action == 'D') {
-                // Double Down
+//             } else if (action == 'D') {
+//                 // Double Down
 
-            } else if (action == 'R') {
-                // Surrender
-                cout << "Surrender\n";
-                hand._isFinished = true;
-                hand._isSurrendered = true;
+//             } else if (action == 'R') {
+//                 // Surrender
+//                 cout << "Surrender\n";
+//                 hand._isFinished = true;
+//                 hand._isSurrendered = true;
 
-            } else {
-                cout << "action not in list";
-            }
+//             } else {
+//                 cout << "action not in list";
+//             }
 
-        };
+//         };
 
-        void dealInitialCards()
-        {
-            for (int p=0;p<_numPlayers+1;p++){
-                // First card
-                if (p < _numPlayers){
-                    //Player card, player cards are always face up
-                    // _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
-                    _players[p].dealCardToPlayerNewHand(_houseCards, true);
-                    cout << "dealing card to " << p << "\n";
-                    cout << "dealing card to " << _players[p]._playerNumber << "\n";
-                } else {
-                    //Dealer card, first is face down
-                    // _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], false);
-                    _players[p].dealCardToPlayerNewHand(_houseCards, false);
-                    cout << "dealing card to " << p << "\n";
-                    cout << "dealing card to " << _players[p]._playerNumber << "\n";
+//         void dealInitialCards()
+//         {
+//             for (int p=0;p<_numPlayers+1;p++){
+//                 // First card
+//                 if (p < _numPlayers){
+//                     //Player card, player cards are always face up
+//                     // _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
+//                     _players[p].dealCardToPlayerNewHand(_houseCards, true);
+//                     cout << "dealing card to " << p << "\n";
+//                     cout << "dealing card to " << _players[p]._playerNumber << "\n";
+//                 } else {
+//                     //Dealer card, first is face down
+//                     // _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], false);
+//                     _players[p].dealCardToPlayerNewHand(_houseCards, false);
+//                     cout << "dealing card to " << p << "\n";
+//                     cout << "dealing card to " << _players[p]._playerNumber << "\n";
 
-                }
-            }
+//                 }
+//             }
 
-            for (int p=0;p<_numPlayers+1;p++){
-                // Second card is always face up
-                    _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
-                }
+//             for (int p=0;p<_numPlayers+1;p++){
+//                 // Second card is always face up
+//                     _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
+//                 }
             
 
-        };
+//         };
 
 
-        void printRoundStatus(){
-            //print all information relevant to round
+//         void printRoundStatus(){
+//             //print all information relevant to round
 
-            cout << "Round number: " << _roundNum << endl;
-            for (int p=0;p<_numPlayers+1;p++){
+//             cout << "Round number: " << _roundNum << endl;
+//             for (int p=0;p<_numPlayers+1;p++){
 
-                    cout << "Player " << p << endl;
-                    _players[p].printPlayerData();
-                }
+//                     cout << "Player " << p << endl;
+//                     _players[p].printPlayerData();
+//                 }
 
-        };
+//         };
 
 
-        int _numHumanPlayers; //this is at least 1
-        int _numComputerPlayers; //this is 0 or more
-        int _numPlayers; //human players + computer players + dealer
-        int _numGamblers; //human players + computer players (is _numPlayers - 1)
+//         int _numHumanPlayers; //this is at least 1
+//         int _numComputerPlayers; //this is 0 or more
+//         int _numPlayers; //human players + computer players + dealer
+//         int _numGamblers; //human players + computer players (is _numPlayers - 1)
         
-        int _roundNum = 1;
+//         int _roundNum = 1;
 
-        long long int _initialPlayerMoney;
-        long long int _initialCasinoInitialMoney;
+//         long long int _initialPlayerMoney;
+//         long long int _initialCasinoInitialMoney;
 
-        vector<Player> _players;
-        int _numDecks;
+//         vector<Player> _players;
+//         int _numDecks;
 
-        HouseCards _houseCards;
+//         HouseCards _houseCards;
 
-};
+// };
 
 
 
