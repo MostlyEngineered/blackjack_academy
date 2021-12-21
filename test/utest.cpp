@@ -175,6 +175,29 @@ TEST(CardInstantiation, DealFromHouse){
 
 // }
 
+TEST(CardInstantiation, TestRewards){
+    Game test_game = Game(1, 10000, 1);
+    // players, initial money, decks
+
+    test_game._players[0].playerWins(550);
+    cout << "Player money " << test_game._players[0]._playerMoney << "\n";
+    EXPECT_EQ(test_game._players[0]._playerMoney, 10550);
+    
+    test_game._players[0].playerLoses(600);
+    cout << "Player money " << test_game._players[0]._playerMoney << "\n";
+    EXPECT_EQ(test_game._players[0]._playerMoney, 9950);
+
+    test_game._players[0].playerLosesMultiple(200, 0.5);
+    cout << "Player money " << test_game._players[0]._playerMoney << "\n";
+    EXPECT_EQ(test_game._players[0]._playerMoney, 9850);
+
+    test_game._players[0].playerWinsMultiple(100, 2);
+    cout << "Player money " << test_game._players[0]._playerMoney << "\n";
+    EXPECT_EQ(test_game._players[0]._playerMoney, 10050);
+
+
+}
+
 int main(int argc, char **argv){
 
     ::testing::InitGoogleTest(&argc, argv);

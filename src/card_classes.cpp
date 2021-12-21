@@ -92,7 +92,7 @@ void Hand::printHand(){
         c->printCard();
     }
     cout << "Hand values: " << this->_handValue << " DD:" << this->_isDoubleDownable << 
-    ",Sp:" << this->_isSplittable << ", Bu:" << this->_isBust << ", Fi:" << this->_isFinished;
+    ",Sp:" << this->_isSplittable << ", Bu:" << this->_isBust << ", Fi:" << this->_isFinished << endl;
 };
 
 void Hand::updateHandSplittable(){ 

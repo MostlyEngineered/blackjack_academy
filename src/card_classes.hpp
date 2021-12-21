@@ -58,7 +58,7 @@ class Card {
         };
 
         ~Card(){
-            // cout << "card destroyed" << endl;
+            cout << "card destroyed, this shouldn't happen..." << endl;
             // delete this;
         };
         
@@ -234,7 +234,7 @@ class  HouseCards {
 
         void discardCard(unique_ptr<Card> card){
             _discardPile.moveCardToHand(std::move(card));
-            card = nullptr;
+            // card = nullptr;
         };
 
         void dealCardToShoe(unique_ptr<Card> card){
@@ -318,6 +318,19 @@ class Player {
         void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
             makePlayerNewHand();
             houseCards._shoe.dealRandomCardFromHandToHand(_playerHands.back(), isFaceUp);
+        };
+
+        void discardHands(HouseCards &houseCards){
+            for (int h=0;h<_playerHands.size();h++ )
+            { 
+                for (int c=0;c<_playerHands[h]._handCards.size();c++ )
+                { 
+                    _playerHands[h].dealIndexCardFromHandToHand(c, houseCards._discardPile, false);
+               
+                }
+            }
+            _playerHands.clear();
+            // _playerHands = {};
         };
 
         void printPlayerData(){
@@ -445,39 +458,27 @@ class Game{
 
             discardCards();
 
+            _roundNum = _roundNum + 1;
+
 
         };
 
         void discardCards()
         {
-        int i = 0;
+            int i = 0;
             for (int p=0;p<_numPlayers+1;p++)
             {
-                for (int h=0;h<_players[p]._playerHands.size();h++ )
-                { 
-                    for (int c=0;c<_players[p]._playerHands[h]._handCards.size();c++ )
-                    {
-                        cout << "card " << i << " discarding\n";
-                        i++;
-                        _players[p]._playerHands[h].dealIndexCardFromHandToHand(0, _houseCards._discardPile, false);
-                    }
-                    
-                }
-                while (!_players[p]._playerHands.empty())
-                {
-                    // delete hands  {}{}{}{}continue here
-                    // Customer *cust = newcustomer.front();
-                    // newcustomer.erase(newcustomer.begin());
-                    // delete cust;
-                }
+                _players[p].discardHands(_houseCards);
+
+                cout << "print discard pile\n";
+                _houseCards._discardPile.printHand();
+
             }
         };
 
         void calculateTurnResults()
         {
             int dealerScore =  _players[_players.size()-1]._playerHands[0]._handValue;
-
-
 
             for (int p=0;p<_numPlayers;p++)
             {
@@ -486,35 +487,44 @@ class Game{
                     if (_players[p]._playerHands[h]._isBust) 
                     {
                         //Player is bust, loses
+                        cout << "Calc result: bust\n";
                         _players[p].playerLoses(_players[p]._playerCurBet);
                     }
                     else if (_players[p]._playerHands[h]._isBlackjack) 
                     {
                         //Player is blackjack, use house rules
+                        cout << "Calc result: blackjack\n";
                         _players[p].playerWinsMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
                     }
 
                     else if (_players[p]._playerHands[h]._isSurrendered)
                     {
+                        cout << "Calc result: surrendered\n";
                         _players[p].playerLosesMultiple(_players[p]._playerCurBet, 0.5);
+
                     }
 
                     else if (_players[p]._playerHands[h]._handValue > dealerScore)
                     {
                         //Player wins, due to higher score and not bust (bust checked earlier)
+                        cout << "Calc result: win\n";
                         _players[p].playerWins(_players[p]._playerCurBet);
                     } 
                     else if (_players[p]._playerHands[h]._handValue < dealerScore) 
                     {
                         //Player loses, due to lower score
+                        cout << "Calc result: lose\n";
                         _players[p].playerLoses(_players[p]._playerCurBet);
                     } 
                     else if (_players[p]._playerHands[h]._handValue == dealerScore) 
                     {
                         //Player push
+                        cout << "Calc result: push\n";
                         if (DEALER_PUSH_RESULT == "tie")
                         {
                             // Do nothing in tie push
+                            
+                        
                         } 
                         else if (DEALER_PUSH_RESULT == "win")
                         {
