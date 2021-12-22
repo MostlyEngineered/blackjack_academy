@@ -59,6 +59,7 @@ class Card {
 
         ~Card(){
             cout << "card destroyed, this shouldn't happen..." << endl;
+            this->printCard();
             // delete this;
         };
         
@@ -228,17 +229,32 @@ class  HouseCards {
 
         HouseCards(int nDecks) : _shoe(Shoe(nDecks))
         {
-
+            _shoeResetCardCount = (int)(nDecks * 52 * _resetPercentage);
         };
 
 
         void discardCard(unique_ptr<Card> card){
             _discardPile.moveCardToHand(std::move(card));
-            // card = nullptr;
+
         };
 
         void dealCardToShoe(unique_ptr<Card> card){
             _shoe.moveCardToHand(std::move(card));
+        };
+
+        void reshuffleCards()
+        {
+            // take take all discard cards and put back into shoe
+            int discardSize = 0;
+            
+            discardSize = _discardPile._handCards.size();
+            for (int c=0;c<discardSize;c++ )
+            { 
+                _discardPile.dealIndexCardFromHandToHand(0, _shoe, false);
+                cout << "discarding card " << c << " of " << discardSize << "\n";
+            }
+            
+
         };
 
 
@@ -248,154 +264,10 @@ class  HouseCards {
         long _curID=0;
         Hand _shoe;
         Hand _discardPile;
+        float _resetPercentage = 0.25; // how much of the shoe is left when reset triggers
+        int _shoeResetCardCount;
         int _runningCount = 0; //Running count starts at 0
         float _trueCountValue = 0.0; //True count is running count divided by decks left
 
 };
 
-
-// class Player {
-//     private:
-
-//     public:
-//         Player(char playerType, int playerNumber, long long int playerMoney) {
-//             _playerType = playerType;
-//             _playerNumber = playerNumber;
-
-//             if (playerType == 'D'){
-//                 _isDealer = true;
-//                 _isHuman = false;
-//                 _isBot = false;
-//                 _playerMoney = 50000000;
-//                 cout << "initiate dealer money (" << _playerNumber << "), " << _playerMoney << "\n";
-//             } else if (playerType == 'C'){
-//                 _isDealer = false;
-//                 _isHuman = false;
-//                 _isBot = true;
-//                 _playerMoney = playerMoney;
-//                 cout << "initiate computer money (" << _playerNumber << "), " << _playerMoney << "\n";
-//             } else if (playerType == 'H'){
-//                 _isDealer = false;
-//                 _isHuman = true;
-//                 _isBot = false;
-//                 _playerMoney = playerMoney;
-//                 cout << "initiate player money (" << _playerNumber << "), " << _playerMoney << "\n";
-//             } else {
-//                 cout << "Invalid Player type" << endl;
-//             }
-            
-//         };
-
-//         Player(char playerType, int playerNumber){
-//             Player(playerType, playerNumber, 50000);
-//         };
-
-//         ~Player(){};
-
-//         Player(Player&& other) :
-//             _playerHands(std::move(other._playerHands)),
-//             _playerType(other._playerType),
-//             _playerMoney(other._playerMoney),
-//             _playerNumber(other._playerNumber),
-//             _isDealer(other._isDealer),
-//             _isBot(other._isBot),
-//             _isHuman(other._isHuman),
-//             _isFinished(other._isFinished),
-//             _playerCurBet(other._playerCurBet)
-
-//             {};
-
-//         Player( const Player& ) = delete; // copy constructor 
-//         // Player& Player::operator=( const Player& obj ) {};// copy assignment operator   
-//         // Player& operator=(Player&& obj) {}; // move assignment operator 
-
-
-//         void makePlayerNewHand(){ 
-//             Hand hand;
-//             _playerHands.emplace_back(std::move(hand));
-//         };
-
-//         void dealCardToPlayerNewHand(HouseCards &houseCards, bool isFaceUp){  
-//             makePlayerNewHand();
-//             houseCards._shoe.dealRandomCardFromHandToHand(_playerHands.back(), isFaceUp);
-//         };
-
-//         void discardHands(HouseCards &houseCards){
-//             for (int h=0;h<_playerHands.size();h++ )
-//             { 
-//                 for (int c=0;c<_playerHands[h]._handCards.size();c++ )
-//                 { 
-//                     _playerHands[h].dealIndexCardFromHandToHand(c, houseCards._discardPile, false);
-               
-//                 }
-//             }
-//             _playerHands.clear();
-//             // _playerHands = {};
-//         };
-
-//         void printPlayerData(){
-//             string playerTag;
-//             if (_isDealer){
-//                 playerTag = " (D)";
-//             } else if (_isHuman) {
-//                 playerTag = " (H)";
-//             } else if (_playerType == 'C') {
-//                 playerTag = " (C)";
-//             } else {
-//                 playerTag = "(invalid player tag)";
-//             }
-
-//             cout << "Player " << _playerNumber << ":" << playerTag << endl;
-//             cout << "Money: " << _playerMoney << endl;
-
-//             for (int h=0;h<_playerHands.size();h++ ){
-//                 cout << "Hand: " << (h+1) << " of " << _playerHands.size() << endl;    
-//                 _playerHands[h].printHand();
-//                 cout << endl;
-//             }
-//         }
-
-//         void updateIsFinished()
-//         {
-//             bool isFinished = true;
-//             for (int h=0;h<_playerHands.size();h++ )
-//             {
-//                 if (_playerHands[h]._isFinished == false) 
-//                 {
-//                     isFinished = false;
-//                 }
-//             }
-//             _isFinished = isFinished;
-//         }
-
-//         void playerLoses(int curBet)
-//         {
-//             _playerMoney -= curBet;
-//         };
-
-//         void playerLosesMultiple(int curBet, float multiplier)
-//         {
-//             _playerMoney -= ((float)curBet * multiplier);
-//         };
-
-//         void playerWins(int curBet)
-//         {
-//             _playerMoney += curBet;
-//         };
-
-//         void playerWinsMultiple(int curBet, float multiplier)
-//         {
-//             _playerMoney += ((float)curBet * multiplier);
-//         };
-
-//         vector<Hand> _playerHands; //splits can make a player have multiple hands
-//         long long int _playerMoney; //how much money the player has
-//         int _playerNumber; //player number (this keeps track of player round resolution order)
-//         char _playerType; // 'H' Human, 'C' Computer, 'D' Dealer (no human dealers)
-//         bool _isDealer;
-//         bool _isHuman;
-//         bool _isBot;
-//         bool _isFinished = false; //player is finished when all his current round hands are finished, when hands are cleaned up this should be reset back to false
-//         int _playerCurBet;
-
-// };
