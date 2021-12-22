@@ -108,7 +108,7 @@ class Hand{
 
     //Destructor
     ~Hand(){
-        cout << "Hand destroyed" << endl;
+        // cout << "Hand destroyed" << endl;
         };
 
     // move constructor 
@@ -194,7 +194,7 @@ class Hand{
     bool _isSurrenderable = false;
     bool _isFinished = false; // only changes to true when a stop condition is reached (Stay, Doubledown, Bust, Surrender)
     bool _isSurrendered = false;
-    
+    int _handBet; //bet for hand (needs to be handled in hand due to double down after split)
 
 };
 
@@ -216,9 +216,12 @@ class Shoe : public Hand {
             }
         }
         updateHandSize();
-        cout << "Shoe created" << endl;        
+        // cout << "Shoe created" << endl;   //debug inspection line
     };
-    ~Shoe(){cout << "Shoe destroyed" << endl;};
+
+    ~Shoe(){
+        // cout << "Shoe destroyed" << endl; //debug inspection line
+        };
 
 };
 
@@ -251,7 +254,7 @@ class  HouseCards {
             for (int c=0;c<discardSize;c++ )
             { 
                 _discardPile.dealIndexCardFromHandToHand(0, _shoe, false);
-                cout << "discarding card " << c << " of " << discardSize << "\n";
+                // cout << "discarding card " << c << " of " << discardSize << "\n"; //debug inspection line
             }
             
 
