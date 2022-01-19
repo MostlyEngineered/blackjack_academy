@@ -357,21 +357,25 @@ class Player {
 
         void playerLoses(int curBet)
         {
+            cout << "player loses " << curBet << "\n";
             _playerMoney -= curBet;
         };
 
         void playerLosesMultiple(int curBet, float multiplier)
         {
+            cout << "player loses multiple " << curBet << "\n";
             _playerMoney -= ((float)curBet * multiplier);
         };
 
         void playerWins(int curBet)
         {
+            cout << "player wins " << curBet << "\n";
             _playerMoney += curBet;
         };
 
         void playerWinsMultiple(int curBet, float multiplier)
         {
+            cout << "player wins multiple " << curBet << "\n";
             _playerMoney += ((float)curBet * multiplier);
         };
 
@@ -464,16 +468,13 @@ class Game{
                         i++;
                         _players[p]._playerHands[h].dealIndexCardFromHandToHand(0, _houseCards._discardPile, false);
                     }
+
                     
                 }
-                // while (!_players[p]._playerHands.empty())
-                // {
-                //     cout << "stuck here";
-                //     // delete hands  {}{}{}{}continue here
-                //     // Customer *cust = newcustomer.front();
-                //     // newcustomer.erase(newcustomer.begin());
-                //     // delete cust;
-                // }
+
+                _players[p]._playerHands.clear();
+                _players[p]._isFinished = false;
+
             }
             _roundNum += 1;
         };
@@ -483,36 +484,50 @@ class Game{
             int dealerScore =  _players[_players.size()-1]._playerHands[0]._handValue;
 
             cout << "calc turn result\n";
+            cout << "dealer score: " << dealerScore << "\n";
 
             for (int p=0;p<_numPlayers;p++)
             {
                 for (int h=0;h<_players[p]._playerHands.size();h++ )
                 {
+                    _players[p]._playerHands[h].printHand();
+                    cout << "\n";
                     if (_players[p]._playerHands[h]._isBust) 
                     {
                         //Player is bust, loses
                         _players[p].playerLoses(_players[p]._playerCurBet);
+                        //Adjust House
+                        _players[_players.size()-1].playerWins(_players[p]._playerCurBet);
+
                     }
                     else if (_players[p]._playerHands[h]._isBlackjack) 
                     {
                         //Player is blackjack, use house rules
                         _players[p].playerWinsMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
+                        //Adjust House
+                        _players[_players.size()-1].playerLosesMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
                     }
 
                     else if (_players[p]._playerHands[h]._isSurrendered)
                     {
                         _players[p].playerLosesMultiple(_players[p]._playerCurBet, 0.5);
+                        //Adjust House
+                        _players[_players.size()-1].playerWinsMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
                     }
 
                     else if (_players[p]._playerHands[h]._handValue > dealerScore)
                     {
                         //Player wins, due to higher score and not bust (bust checked earlier)
                         _players[p].playerWins(_players[p]._playerCurBet);
+                        //Adjust House
+                        _players[_players.size()-1].playerLoses(_players[p]._playerCurBet);
                     } 
                     else if (_players[p]._playerHands[h]._handValue < dealerScore) 
                     {
                         //Player loses, due to lower score
                         _players[p].playerLoses(_players[p]._playerCurBet);
+                        //Adjust House
+                        _players[_players.size()-1].playerWins(_players[p]._playerCurBet);
                     } 
                     else if (_players[p]._playerHands[h]._handValue == dealerScore) 
                     {
@@ -524,10 +539,14 @@ class Game{
                         else if (DEALER_PUSH_RESULT == "win")
                         {
                             _players[p].playerWins(_players[p]._playerCurBet);
+                            //Adjust House
+                            _players[_players.size()-1].playerLoses(_players[p]._playerCurBet);
                         } 
                         else if (DEALER_PUSH_RESULT == "lose")
                         {
                             _players[p].playerLoses(_players[p]._playerCurBet);
+                            //Adjust House
+                            _players[_players.size()-1].playerWins(_players[p]._playerCurBet);
                         }
                         else
                         {
@@ -538,8 +557,7 @@ class Game{
                     }
 
                 }
-                // DEALER_PUSH_RESULT
-                // if _players[p]
+
             }
 
 
@@ -570,6 +588,7 @@ class Game{
                         std::cout << "Invalid entry, retry bet entry!" << endl;
                     }
                     std::cout << "Bet: " << curBet << endl; 
+                    _players[p]._playerCurBet = curBet;
  
 
                 }  else if (_players[p]._isBot) {
