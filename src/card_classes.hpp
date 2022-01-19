@@ -451,11 +451,14 @@ class Game{
         void discardCards()
         {
         int i = 0;
+        int handSize;
             for (int p=0;p<_numPlayers+1;p++)
             {
                 for (int h=0;h<_players[p]._playerHands.size();h++ )
                 { 
-                    for (int c=0;c<_players[p]._playerHands[h]._handCards.size();c++ )
+                    handSize = _players[p]._playerHands[h]._handCards.size();
+                    i=0;
+                    for (int c=0;c<handSize;c++ )
                     {
                         cout << "card " << i << " discarding\n";
                         i++;
@@ -463,21 +466,23 @@ class Game{
                     }
                     
                 }
-                while (!_players[p]._playerHands.empty())
-                {
-                    // delete hands  {}{}{}{}continue here
-                    // Customer *cust = newcustomer.front();
-                    // newcustomer.erase(newcustomer.begin());
-                    // delete cust;
-                }
+                // while (!_players[p]._playerHands.empty())
+                // {
+                //     cout << "stuck here";
+                //     // delete hands  {}{}{}{}continue here
+                //     // Customer *cust = newcustomer.front();
+                //     // newcustomer.erase(newcustomer.begin());
+                //     // delete cust;
+                // }
             }
+            _roundNum += 1;
         };
 
         void calculateTurnResults()
         {
             int dealerScore =  _players[_players.size()-1]._playerHands[0]._handValue;
 
-
+            cout << "calc turn result\n";
 
             for (int p=0;p<_numPlayers;p++)
             {
@@ -581,16 +586,6 @@ class Game{
 
         };
 
-        // char* TakeNCharactersFromInput(int n)
-        //     {
-        //         char *input = new char[n+2];
-        //         std::cin.getline(input, n+1);
-        //         cin.clear();
-        //         fflush(stdin);
-        //         return input;
-        //     };
-
-
         void processPlayerTurns()
         // process all player turns
         {
@@ -626,6 +621,7 @@ class Game{
                                     cout << "valid action selected\n";
                                     //Execute Valid command
                                     executePlayerAction(curAction, _players[p]._playerHands[ii], _houseCards);
+                                    // curAction
                                     printRoundStatus();
 
 
