@@ -23,14 +23,6 @@ void init_logging()
     );
 }
 
-// void init_logging()
-// {
-//     logging::core::get()->set_filter
-//     (
-//         logging::trivial::severity >= logging::trivial::info
-//     );
-// }
-
 int main(int, char*[]){
     init_logging();
     
@@ -40,7 +32,7 @@ int main(int, char*[]){
     // BOOST_LOG_TRIVIAL(warning) << "This is a warning severity message";
     // BOOST_LOG_TRIVIAL(error) << "This is an error severity message";
     // BOOST_LOG_TRIVIAL(fatal) << "and this is a fatal severity message";
-    
+
     Game myGame = Game(1, 500000, 1);
     // Game myGame;
     // Player player = Player('H', 1, 5);

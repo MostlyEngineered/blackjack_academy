@@ -209,9 +209,7 @@ class Shoe : public Hand {
 
     public:
 
-    Shoe(int nDecks){
-        
-        
+    Shoe(int nDecks){    
         for (int n=0;n < nDecks;++n){ 
             for (auto const& s : suits){
                 for (auto const& r : ranks){                 
@@ -223,7 +221,10 @@ class Shoe : public Hand {
         updateHandSize();
         BOOST_LOG_TRIVIAL(debug) << "Shoe created";        
     };
-    ~Shoe(){BOOST_LOG_TRIVIAL(debug) << "Shoe destroyed";};
+
+    ~Shoe(){
+        BOOST_LOG_TRIVIAL(debug) << "Shoe destroyed";
+    };
 
 };
 
@@ -234,7 +235,7 @@ class  HouseCards {
 
         HouseCards(int nDecks) : _shoe(Shoe(nDecks))
         {
-
+            BOOST_LOG_TRIVIAL(debug) << "Multideck Shoe created";
         };
 
 
@@ -273,25 +274,25 @@ class Player {
                 _isHuman = false;
                 _isBot = false;
                 _playerMoney = 50000000;
-                // BOOST_LOG_TRIVIAL(debug) << "initiate dealer money (" << _playerNumber << "), " << _playerMoney;
-                // cout << "initiate dealer money (" << _playerNumber << "), " << _playerMoney << "\n";
+                BOOST_LOG_TRIVIAL(debug) << "initiate dealer money (" << _playerNumber << "), " << _playerMoney;
+
             } else if (playerType == 'C'){
                 _isDealer = false;
                 _isHuman = false;
                 _isBot = true;
                 _playerMoney = playerMoney;
-                // BOOST_LOG_TRIVIAL(debug) << "initiate computer money (" << _playerNumber << "), " << _playerMoney;                
-                // cout << "initiate computer money (" << _playerNumber << "), " << _playerMoney << "\n";
+                BOOST_LOG_TRIVIAL(debug) << "initiate computer money (" << _playerNumber << "), " << _playerMoney;                
+
             } else if (playerType == 'H'){
                 _isDealer = false;
                 _isHuman = true;
                 _isBot = false;
                 _playerMoney = playerMoney;
-                // BOOST_LOG_TRIVIAL(debug) << "initiate player money (" << _playerNumber << "), " << _playerMoney;
-                // cout << "initiate player money (" << _playerNumber << "), " << _playerMoney << "\n";
+                BOOST_LOG_TRIVIAL(debug) << "initiate player money (" << _playerNumber << "), " << _playerMoney;
+
             } else {
                 BOOST_LOG_TRIVIAL(debug) << "Invalid Player type";
-                // cout << "Invalid Player type" << endl;
+
             }
             
         };
@@ -426,20 +427,19 @@ class Game{
         void seatPlayers(){
             int ii = 0;
             for (int p=0;p<_numHumanPlayers;p++){
-                cout << "add H Player" << endl;
+                BOOST_LOG_TRIVIAL(debug) << "add H Player";
                 _players.emplace_back(std::move(Player('H', ii, _initialPlayerMoney)));
                 ii++;
                 }
             
             for (int p=0;p<_numComputerPlayers;p++){
-                cout << "add C Player" << endl;
+                BOOST_LOG_TRIVIAL(debug) << "add C Player";
                 _players.emplace_back(std::move(Player('C', ii, _initialPlayerMoney)));
                 ii++;
                 }
 
             // Add dealer player
-            
-            cout << "add D Player" << endl;
+            BOOST_LOG_TRIVIAL(debug) << "add D Player";
             _players.emplace_back(std::move(Player('D', ii, _initialCasinoInitialMoney)));
         
         };
@@ -456,6 +456,11 @@ class Game{
             takeInitialBets();
 
             processPlayerTurns();
+
+            if (_exit_flag)
+            {
+                return;
+            }
 
             calculateTurnResults();
 
@@ -565,15 +570,9 @@ class Game{
                         {
                             BOOST_LOG_TRIVIAL(error) << "Invalid Dealer rule on push";
                         }
-  
-                        
                     }
-
-                }
-
-            }
-
-
+                } //end hand loop
+            } // end player loop
         };
 
         void takeInitialBets()
@@ -586,8 +585,8 @@ class Game{
             {
                 if (_players[p]._isHuman) {
 
-                    cout << "Enter an bet for Player " << _players[p]._playerNumber << ":\n";
-
+                    cout << "Enter a bet for Player " << _players[p]._playerNumber << ":\n";
+                    std::cin.clear();
                     while (std::getline(std::cin, line))
                     {
                         std::stringstream ss(line);
@@ -600,6 +599,7 @@ class Game{
                         }
                         std::cout << "Invalid entry, retry bet entry!" << endl;
                     }
+                    std::cin.clear();
                     std::cout << "Bet: " << curBet << endl; 
                     _players[p]._playerCurBet = curBet;
  
@@ -642,7 +642,9 @@ class Game{
                                 cout << "]\n";
                                 
                                 // {}{}{} adjust input to transform to capital letters and only first, then clear other character in stdin
+                                std::cin.clear();
                                 std::cin >> curAction;
+                                std::cin.clear();
                                 // curAction = TakeNCharactersFromInput(1)[0];
                                 
                                 if ( std::find(_players[p]._playerHands[ii]._possibleActions.begin(), 
@@ -650,14 +652,22 @@ class Game{
                                      _players[p]._playerHands[ii]._possibleActions.end() )
 
                                 {
-                                    cout << "valid action selected\n";
+                                    // cout << "valid action selected\n";
+                                    BOOST_LOG_TRIVIAL(debug) << "valid action selected";
+                                    BOOST_LOG_TRIVIAL(debug) << "Player " << p << ": action " << curAction;
+                                    
                                     //Execute Valid command
                                     executePlayerAction(curAction, _players[p]._playerHands[ii], _houseCards);
+                                    if (_exit_flag)
+                                    {
+                                        return;
+                                    }
                                     // curAction
                                     printRoundStatus();
 
 
                                 } else {
+                                    BOOST_LOG_TRIVIAL(debug) << "invalid action selected";
                                     cout << "invalid action selected, retry command\n";
                                 }
 
@@ -683,9 +693,13 @@ class Game{
                         { 
                             // Dealer must hit on anything equal to or less than DEALER_HIT_LIMIT
                             executePlayerAction('H', _players[p]._playerHands[0], _houseCards);
+                            BOOST_LOG_TRIVIAL(debug) << "valid action selected";
+                            BOOST_LOG_TRIVIAL(debug) << "Player " << p << ": action " << curAction;
                         } else {
                             // Dealer must stay if greater than the DEALER_HIT_LIMIT
                             executePlayerAction('S', _players[p]._playerHands[0], _houseCards);
+                            BOOST_LOG_TRIVIAL(debug) << "valid action selected";
+                            BOOST_LOG_TRIVIAL(debug) << "Player " << p << ": action " << curAction;
                         }
 
                     } 
@@ -742,21 +756,19 @@ class Game{
                     //Player card, player cards are always face up
                     // _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
                     _players[p].dealCardToPlayerNewHand(_houseCards, true);
-                    cout << "dealing card to " << p << "\n";
-                    cout << "dealing card to " << _players[p]._playerNumber << "\n";
                 } else {
                     //Dealer card, first is face down
                     // _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], false);
                     _players[p].dealCardToPlayerNewHand(_houseCards, false);
-                    cout << "dealing card to " << p << "\n";
-                    cout << "dealing card to " << _players[p]._playerNumber << "\n";
 
                 }
+                BOOST_LOG_TRIVIAL(debug) << "deal initial card to Player " << p;
             }
 
             for (int p=0;p<_numPlayers+1;p++){
                 // Second card is always face up
                     _houseCards._shoe.dealRandomCardFromHandToHand(_players[p]._playerHands[0], true);
+                    BOOST_LOG_TRIVIAL(debug) << "deal second card to Player " << p;
                 }
             
 
@@ -775,7 +787,6 @@ class Game{
 
         };
 
-
         int _numHumanPlayers; //this is at least 1
         int _numComputerPlayers; //this is 0 or more
         int _numPlayers; //human players + computer players + dealer
@@ -793,6 +804,3 @@ class Game{
         bool _exit_flag = false;
 
 };
-
-
-
