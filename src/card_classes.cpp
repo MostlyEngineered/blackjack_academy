@@ -95,6 +95,14 @@ void Hand::printHand(){
     ",Sp:" << this->_isSplittable << ", Bu:" << this->_isBust << ", Fi:" << this->_isFinished;
 };
 
+void Hand::logHand(){
+    for (auto &c : _handCards){
+        c->printCard();
+    }
+    BOOST_LOG_TRIVIAL(debug) << "Hand values: " << this->_handValue << " DD:" << this->_isDoubleDownable << 
+    ",Sp:" << this->_isSplittable << ", Bu:" << this->_isBust << ", Fi:" << this->_isFinished;
+};
+
 void Hand::updateHandSplittable(){ 
     //This should be called after handsize is updated
     //Splittable hands are hands of size 2 that are a pair (identical rank)

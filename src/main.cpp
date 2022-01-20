@@ -4,6 +4,9 @@
 using std::cout;
 #include <stdlib.h>
 
+#include <thread>
+#include <future>
+
 #include <boost/log/core.hpp> 
 #include <boost/log/trivial.hpp> 
 #include <boost/log/expressions.hpp> 
@@ -22,6 +25,45 @@ void init_logging()
         logging::trivial::severity >= logging::trivial::debug
     );
 }
+
+
+// Udacity code template
+
+void modifyMessage(std::promise<std::string> && prms, std::string message)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // simulate work
+    std::string modifiedMessage = message + " has been modified"; 
+    prms.set_value(modifiedMessage);
+}
+
+int test_main()
+{
+    // define message
+    std::string messageToThread = "My Message";
+
+    // create promise and future
+    std::promise<std::string> prms;
+    std::future<std::string> ftr = prms.get_future();
+
+    // start thread and pass promise as argument
+    std::thread t(modifyMessage, std::move(prms), messageToThread);
+
+        // retrieve modified message via future and print to console
+    std::string messageFromThread = ftr.get();
+    std::cout << "Modified message from thread(): " << messageFromThread << std::endl;
+    
+    // print original message to console
+    std::cout << "Original message from main(): " << messageToThread << std::endl;
+
+    // thread barrier
+    t.join();
+
+    return 0;
+}
+
+
+
+
 
 int main(int, char*[]){
     init_logging();

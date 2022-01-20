@@ -82,6 +82,12 @@ class Card {
                     << _hardValue << ", RC: " << _runningCountValue 
                     << ", faceup: " << _isFaceUp << endl;
             };
+        void logCard()
+            {
+                BOOST_LOG_TRIVIAL(debug) << _cardID << ": " << _cRank << _suit << ", HV: " 
+                    << _hardValue << ", RC: " << _runningCountValue 
+                    << ", faceup: " << _isFaceUp;
+            };
 
         long _cardID;
         char _cRank;
@@ -126,6 +132,7 @@ class Hand{
 
 
     void printHand();
+    void logHand();
     void calculateHandValue();
     void updateHandSize(){
         _handSize = _handCards.size();
@@ -586,7 +593,6 @@ class Game{
                 if (_players[p]._isHuman) {
 
                     cout << "Enter a bet for Player " << _players[p]._playerNumber << ":\n";
-                    std::cin.clear();
                     while (std::getline(std::cin, line))
                     {
                         std::stringstream ss(line);
@@ -599,7 +605,7 @@ class Game{
                         }
                         std::cout << "Invalid entry, retry bet entry!" << endl;
                     }
-                    std::cin.clear();
+
                     std::cout << "Bet: " << curBet << endl; 
                     _players[p]._playerCurBet = curBet;
  
@@ -642,9 +648,7 @@ class Game{
                                 cout << "]\n";
                                 
                                 // {}{}{} adjust input to transform to capital letters and only first, then clear other character in stdin
-                                std::cin.clear();
                                 std::cin >> curAction;
-                                std::cin.clear();
                                 // curAction = TakeNCharactersFromInput(1)[0];
                                 
                                 if ( std::find(_players[p]._playerHands[ii]._possibleActions.begin(), 
@@ -694,12 +698,12 @@ class Game{
                             // Dealer must hit on anything equal to or less than DEALER_HIT_LIMIT
                             executePlayerAction('H', _players[p]._playerHands[0], _houseCards);
                             BOOST_LOG_TRIVIAL(debug) << "valid action selected";
-                            BOOST_LOG_TRIVIAL(debug) << "Player " << p << ": action " << curAction;
+                            BOOST_LOG_TRIVIAL(debug) << "Dealer Player " << p << ": action " << curAction;
                         } else {
                             // Dealer must stay if greater than the DEALER_HIT_LIMIT
                             executePlayerAction('S', _players[p]._playerHands[0], _houseCards);
                             BOOST_LOG_TRIVIAL(debug) << "valid action selected";
-                            BOOST_LOG_TRIVIAL(debug) << "Player " << p << ": action " << curAction;
+                            BOOST_LOG_TRIVIAL(debug) << "Dealer Player " << p << ": action " << curAction;
                         }
 
                     } 
@@ -811,38 +815,3 @@ class Game{
 
 
 
-// Udacity code template
-
-void modifyMessage(std::promise<std::string> && prms, std::string message)
-{
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // simulate work
-    std::string modifiedMessage = message + " has been modified"; 
-    prms.set_value(modifiedMessage);
-}
-
-int test_main()
-{
-    // define message
-    std::string messageToThread = "My Message";
-
-    // create promise and future
-    std::promise<std::string> prms;
-    std::future<std::string> ftr = prms.get_future();
-
-    // start thread and pass promise as argument
-    std::thread t(modifyMessage, std::move(prms), messageToThread);
-
-        // retrieve modified message via future and print to console
-    std::string messageFromThread = ftr.get();
-    std::cout << "Modified message from thread(): " << messageFromThread << std::endl;
-    
-    // print original message to console
-    std::cout << "Original message from main(): " << messageToThread << std::endl;
-
-
-
-    // thread barrier
-    t.join();
-
-    return 0;
-}
