@@ -103,7 +103,14 @@ All Cards (AllCards):
 
 Player Logic:
   # On separate thread for each player
-  # Governs what computer players will do, governs hints for human players
+  # Governs what computer players will do
   # Should have access to the hand
   # Dealer logic pattern should be a type here
   
+
+
+
+Plan for bots
+  Start thread when bot player is made (this can allow for different bot logic to be added)
+  Send player and dealer state info to bot thread via promise
+  Use future to get player action and execute action
