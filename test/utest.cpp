@@ -6,6 +6,26 @@
 #include <vector>
 #include "../src/card_classes.hpp"
 
+
+#include <boost/log/core.hpp> 
+#include <boost/log/trivial.hpp> 
+#include <boost/log/expressions.hpp> 
+#include <boost/log/utility/setup/file.hpp>
+
+namespace logging = boost::log;
+ 
+void init_logging()
+{
+    logging::add_file_log("sample.log");
+
+    logging::core::get()->set_filter
+    (
+        logging::trivial::severity >= logging::trivial::info
+    );
+}
+
+
+
 // TEST(CardInstantiation, MakeDecks){ // old test
 //     HouseCards test_cards = HouseCards(2);
 //     EXPECT_EQ(test_cards._curID, 104);

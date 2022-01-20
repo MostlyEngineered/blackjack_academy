@@ -11,6 +11,11 @@
 #include <algorithm>
 #include <limits>
 #include <sstream>
+#include <boost/log/trivial.hpp>
+
+#include <boost/log/core.hpp> 
+#include <boost/log/expressions.hpp> 
+#include <boost/log/utility/setup/file.hpp>
 
 using std::string;
 using std::cout;
@@ -107,7 +112,7 @@ class Hand{
 
     //Destructor
     ~Hand(){
-        cout << "Hand destroyed" << endl;
+        BOOST_LOG_TRIVIAL(debug) << "Hand destroyed";
         };
 
     // move constructor 
@@ -172,7 +177,8 @@ class Hand{
             }
             if (_isSurrenderable){
                 _possibleActions.emplace_back('R');
-            }        
+            }
+            _possibleActions.emplace_back('Q');
         }
     }
 
@@ -215,9 +221,9 @@ class Shoe : public Hand {
             }
         }
         updateHandSize();
-        cout << "Shoe created" << endl;        
+        BOOST_LOG_TRIVIAL(debug) << "Shoe created";        
     };
-    ~Shoe(){cout << "Shoe destroyed" << endl;};
+    ~Shoe(){BOOST_LOG_TRIVIAL(debug) << "Shoe destroyed";};
 
 };
 
@@ -267,21 +273,25 @@ class Player {
                 _isHuman = false;
                 _isBot = false;
                 _playerMoney = 50000000;
-                cout << "initiate dealer money (" << _playerNumber << "), " << _playerMoney << "\n";
+                // BOOST_LOG_TRIVIAL(debug) << "initiate dealer money (" << _playerNumber << "), " << _playerMoney;
+                // cout << "initiate dealer money (" << _playerNumber << "), " << _playerMoney << "\n";
             } else if (playerType == 'C'){
                 _isDealer = false;
                 _isHuman = false;
                 _isBot = true;
                 _playerMoney = playerMoney;
-                cout << "initiate computer money (" << _playerNumber << "), " << _playerMoney << "\n";
+                // BOOST_LOG_TRIVIAL(debug) << "initiate computer money (" << _playerNumber << "), " << _playerMoney;                
+                // cout << "initiate computer money (" << _playerNumber << "), " << _playerMoney << "\n";
             } else if (playerType == 'H'){
                 _isDealer = false;
                 _isHuman = true;
                 _isBot = false;
                 _playerMoney = playerMoney;
-                cout << "initiate player money (" << _playerNumber << "), " << _playerMoney << "\n";
+                // BOOST_LOG_TRIVIAL(debug) << "initiate player money (" << _playerNumber << "), " << _playerMoney;
+                // cout << "initiate player money (" << _playerNumber << "), " << _playerMoney << "\n";
             } else {
-                cout << "Invalid Player type" << endl;
+                BOOST_LOG_TRIVIAL(debug) << "Invalid Player type";
+                // cout << "Invalid Player type" << endl;
             }
             
         };
@@ -357,25 +367,25 @@ class Player {
 
         void playerLoses(int curBet)
         {
-            cout << "player loses " << curBet << "\n";
+            BOOST_LOG_TRIVIAL(debug) <<"player loses " << curBet;
             _playerMoney -= curBet;
         };
 
         void playerLosesMultiple(int curBet, float multiplier)
         {
-            cout << "player loses multiple " << curBet << "\n";
+            BOOST_LOG_TRIVIAL(debug) << "player loses multiple " << curBet;
             _playerMoney -= ((float)curBet * multiplier);
         };
 
         void playerWins(int curBet)
         {
-            cout << "player wins " << curBet << "\n";
+            BOOST_LOG_TRIVIAL(debug) << "player wins " << curBet;
             _playerMoney += curBet;
         };
 
         void playerWinsMultiple(int curBet, float multiplier)
         {
-            cout << "player wins multiple " << curBet << "\n";
+            BOOST_LOG_TRIVIAL(debug) << "player wins multiple " << curBet;
             _playerMoney += ((float)curBet * multiplier);
         };
 
@@ -437,6 +447,8 @@ class Game{
 
         void playRound(){
 
+            BOOST_LOG_TRIVIAL(debug) << "play round";
+
             dealInitialCards();
 
             printRoundStatus();
@@ -464,7 +476,8 @@ class Game{
                     i=0;
                     for (int c=0;c<handSize;c++ )
                     {
-                        cout << "card " << i << " discarding\n";
+
+                        BOOST_LOG_TRIVIAL(debug) << "card " << i << " discarding";
                         i++;
                         _players[p]._playerHands[h].dealIndexCardFromHandToHand(0, _houseCards._discardPile, false);
                     }
@@ -483,8 +496,8 @@ class Game{
         {
             int dealerScore =  _players[_players.size()-1]._playerHands[0]._handValue;
 
-            cout << "calc turn result\n";
-            cout << "dealer score: " << dealerScore << "\n";
+            BOOST_LOG_TRIVIAL(debug) << "calc turn result";
+            BOOST_LOG_TRIVIAL(debug) << "dealer score: " << dealerScore;
 
             for (int p=0;p<_numPlayers;p++)
             {
@@ -550,7 +563,7 @@ class Game{
                         }
                         else
                         {
-                            cout << "Invalid Dealer rule on push";
+                            BOOST_LOG_TRIVIAL(error) << "Invalid Dealer rule on push";
                         }
   
                         
@@ -683,7 +696,8 @@ class Game{
         {
             // 'H', 'S', 'P', 'D', 'R'
             //  Hit, Stay, Split, DoubleDown, Surrender
-            cout << "execute " << action << "\n";
+            // cout << "execute " << action << "\n";
+            BOOST_LOG_TRIVIAL(debug) << "execute " << action;
             if (action == 'H') {
                 // Hit
                 cout << "Hit\n";
@@ -706,8 +720,15 @@ class Game{
                 cout << "Surrender\n";
                 hand._isFinished = true;
                 hand._isSurrendered = true;
+            
+            } 
+            else if (action == 'Q') {
+                // Quit
+                cout << "Quit\n";
+                this->_exit_flag = true;
+            } 
 
-            } else {
+            else {
                 cout << "action not in list";
             }
 
@@ -769,6 +790,7 @@ class Game{
         int _numDecks;
 
         HouseCards _houseCards;
+        bool _exit_flag = false;
 
 };
 

@@ -1,9 +1,46 @@
+#define BOOST_LOG_DYN_LINK 1
 #include <iostream>
 #include "card_classes.hpp"
 using std::cout;
 #include <stdlib.h>
 
-int main(){
+#include <boost/log/core.hpp> 
+#include <boost/log/trivial.hpp> 
+#include <boost/log/expressions.hpp> 
+#include <boost/log/utility/setup/file.hpp>
+
+namespace logging = boost::log;
+namespace keywords = boost::log::keywords;
+
+ 
+void init_logging()
+{
+    logging::add_file_log(keywords::file_name = "sample.log");
+
+    logging::core::get()->set_filter
+    (
+        logging::trivial::severity >= logging::trivial::debug
+    );
+}
+
+// void init_logging()
+// {
+//     logging::core::get()->set_filter
+//     (
+//         logging::trivial::severity >= logging::trivial::info
+//     );
+// }
+
+int main(int, char*[]){
+    init_logging();
+    
+    // BOOST_LOG_TRIVIAL(trace) << "This is a trace severity message";
+    // BOOST_LOG_TRIVIAL(debug) << "This is a debug severity message";
+    // BOOST_LOG_TRIVIAL(info) << "This is an informational severity message"; 
+    // BOOST_LOG_TRIVIAL(warning) << "This is a warning severity message";
+    // BOOST_LOG_TRIVIAL(error) << "This is an error severity message";
+    // BOOST_LOG_TRIVIAL(fatal) << "and this is a fatal severity message";
+    
     Game myGame = Game(1, 500000, 1);
     // Game myGame;
     // Player player = Player('H', 1, 5);
@@ -13,6 +50,11 @@ int main(){
     while (true)
     {
         myGame.playRound();
+        if (myGame._exit_flag)
+        {
+            break;
+        }
+        
     }
     // cout << "program works" << endl;
     return 0;
