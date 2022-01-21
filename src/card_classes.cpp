@@ -120,3 +120,91 @@ void Hand::updateHandSplittable(){
         _isSurrenderable = false;
     }
 };
+
+
+// Udacity code template
+
+void test_modifyMessage(std::promise<std::string> && prms, std::string message)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // simulate work
+    std::string modifiedMessage = message + " has been modified"; 
+    prms.set_value(modifiedMessage);
+}
+
+int test_main()
+{
+    // define message
+    std::string messageToThread = "My Message";
+
+    // create promise and future
+    std::promise<std::string> prms;
+    std::future<std::string> ftr = prms.get_future();
+
+    // start thread and pass promise as argument
+    std::thread t(test_modifyMessage, std::move(prms), messageToThread);
+
+        // retrieve modified message via future and print to console
+    std::string messageFromThread = ftr.get();
+    std::cout << "Modified message from thread(): " << messageFromThread << std::endl;
+    
+    // print original message to console
+    std::cout << "Original message from main(): " << messageToThread << std::endl;
+
+    // thread barrier
+    t.join();
+
+    return 0;
+}
+
+void returnBotDecision(std::promise<std::string> && prms, std::string message)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); // simulate work
+    std::string modifiedMessage = message + " has been modified"; 
+    prms.set_value(modifiedMessage);
+}
+
+int calculateAllLogic()
+{
+
+
+    // start several logic threads lock and unlock each one
+
+
+    // define message
+    std::string messageToThread = "My Message";
+
+    // create promise and future
+    std::promise<std::string> prms;
+    std::future<std::string> ftr = prms.get_future();
+
+    // start thread and pass promise as argument
+    std::thread t(test_modifyMessage, std::move(prms), messageToThread);
+
+        // retrieve modified message via future and print to console
+    std::string messageFromThread = ftr.get();
+    std::cout << "Modified message from thread(): " << messageFromThread << std::endl;
+    
+    // print original message to console
+    std::cout << "Original message from main(): " << messageToThread << std::endl;
+
+    // thread barrier
+    t.join();
+
+    return 0;
+}
+
+
+// std::mutex g_lock;
+ 
+// void func()
+// {
+//     g_lock.lock();
+ 
+//     std::cout << "entered thread " << std::this_thread::get_id() << std::endl;
+//     std::this_thread::sleep_for(std::chrono::seconds(rand() % 10));
+//     std::cout << "leaving thread " << std::this_thread::get_id() << std::endl;
+ 
+//     g_lock.unlock();
+// }
+
+

@@ -13,6 +13,12 @@
 #include <sstream>
 #include <boost/log/trivial.hpp>
 
+#include <thread>
+#include <future>
+#include <mutex>              // std::mutex, std::unique_lock
+#include <condition_variable> // std::condition_variable
+
+
 #include <boost/log/core.hpp> 
 #include <boost/log/expressions.hpp> 
 #include <boost/log/utility/setup/file.hpp>
@@ -528,17 +534,17 @@ class Game{
                     else if (_players[p]._playerHands[h]._isBlackjack) 
                     {
                         //Player is blackjack, use house rules
-                        _players[p].playerWinsMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
+                        _players[p].playerWinsMultiple(_players[p]._playerCurBet, _blackjack_multiple);
                         //Adjust House
-                        _players[_players.size()-1].playerLosesMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
+                        _players[_players.size()-1].playerLosesMultiple(_players[p]._playerCurBet, _blackjack_multiple);
                     }
 
                     else if (_players[p]._playerHands[h]._isSurrendered)
                     {
                         _players[p].playerLosesMultiple(_players[p]._playerCurBet, 0.5);
                         //Adjust House
-                        _players[_players.size()-1].playerWinsMultiple(_players[p]._playerCurBet, BLACKJACK_MULTIPLE);
-                    }
+                        _players[_players.size()-1].playerWinsMultiple(_players[p]._playerCurBet, _blackjack_multiple);
+                    } 
 
                     else if (_players[p]._playerHands[h]._handValue > dealerScore)
                     {
@@ -557,17 +563,17 @@ class Game{
                     else if (_players[p]._playerHands[h]._handValue == dealerScore) 
                     {
                         //Player push
-                        if (DEALER_PUSH_RESULT == "tie")
+                        if (this->_dealerPushResult == 't')
                         {
                             // Do nothing in tie push
                         } 
-                        else if (DEALER_PUSH_RESULT == "win")
+                        else if (this->_dealerPushResult == 'w')
                         {
                             _players[p].playerWins(_players[p]._playerCurBet);
                             //Adjust House
                             _players[_players.size()-1].playerLoses(_players[p]._playerCurBet);
-                        } 
-                        else if (DEALER_PUSH_RESULT == "lose")
+                        }
+                        else if (this->_dealerPushResult == 'l')
                         {
                             _players[p].playerLoses(_players[p]._playerCurBet);
                             //Adjust House
@@ -795,6 +801,11 @@ class Game{
         int _numComputerPlayers; //this is 0 or more
         int _numPlayers; //human players + computer players + dealer
         int _numGamblers; //human players + computer players (is _numPlayers - 1)
+
+        char _dealerPushResult = 't';
+        float _blackjack_multiple = 2.0;
+
+        
         
         int _roundNum = 1;
 
@@ -808,10 +819,6 @@ class Game{
         bool _exit_flag = false;
 
 };
-
-
-
-
 
 
 
